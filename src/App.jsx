@@ -1,5 +1,6 @@
 import "./App.css";
 import Router from "./router";
+import "tippy.js/dist/tippy.css";
 
 function App() {
   return (
