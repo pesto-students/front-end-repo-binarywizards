@@ -1,8 +1,10 @@
 import Tippy from "@tippyjs/react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import Icon from "../components/icon";
+import googleLogo from "../assets/google-logo.svg";
 
-const LoginPage = () => {
+const SignupPage = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const togglePasswordVisibility = (flag) => {
@@ -20,7 +22,7 @@ const LoginPage = () => {
         <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
             <h1 className="text-xl font-bold  text-center leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-              Welcome Back
+              Create your account
             </h1>
 
             <form className="max-w-sm mx-auto">
@@ -106,27 +108,52 @@ const LoginPage = () => {
                 </div>
               </div>
               <div className="flex items-start mb-5">
-                <Link to={"/forgot-password"}>
-                  <a className="font-medium text-primary focus:outline-accent dark:text-blue-500 hover:underline">
-                    Forgot password?
-                  </a>
-                </Link>
+                <div className="flex items-center h-5">
+                  <input
+                    id="joinedAsReviewer"
+                    type="checkbox"
+                    value=""
+                    className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800"
+                    required
+                  />
+                </div>
+                <label
+                  htmlFor="joinedAsReviewer"
+                  className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                  Join our Reviewer Community
+                </label>
               </div>
               <button
                 type="submit"
                 className="text-white bg-accent hover:opacity-95 focus:ring-4 focus:outline-none  focus:ring-accent-300 font-medium rounded-lg text-sm w-full px-5 py-4 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                Login
+                Sign up
               </button>
             </form>
-            <div className="text-center">
-              <p className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
-                Don&apos;t have an account?
-                <Link
-                  to={"/signup"}
-                  className="text-primary hover:underline ml-2 focus:outline-accent dark:text-blue-500">
-                  Sign up
-                </Link>
-              </p>
+            <div>
+              <div className="text-center">
+                <p className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                  Already have an account?
+                  <Link
+                    to={"/login"}
+                    className="text-primary hover:underline ml-2 focus:outline-accent dark:text-blue-500">
+                    Log in
+                  </Link>
+                </p>
+              </div>
+              <div className="inline-flex items-center justify-center w-full">
+                <hr className="w-64 h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" />
+                <span className="absolute px-3 font-medium text-gray-900 -translate-x-1/2 bg-white left-1/2 dark:text-white dark:bg-gray-900">
+                  OR
+                </span>
+              </div>
+              <div>
+                <button
+                  type="button"
+                  className="text-gray-900 w-full bg-white hover:bg-gray-100 border border-gray-300 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-4 py-4 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 me-2 mb-2">
+                  <Icon icon={googleLogo} className="mr-4" />
+                  Continue with Google
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -135,4 +162,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default SignupPage;
