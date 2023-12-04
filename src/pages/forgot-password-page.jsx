@@ -4,10 +4,11 @@ const ForgotPasswordPage = () => {
   return (
     <section className="bg-gray-50 dark:bg-gray-900">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-        <Link to={"/"}>
-          <a className="flex items-center mb-6 text-2xl font-semibold text-primary focus:outline-accent dark:text-white">
-            Perfectresume.ai
-          </a>
+        <Link
+          to={"/"}
+          className="flex items-center mb-6 text-2xl font-semibold text-primary focus:outline-accent dark:text-white"
+        >
+          PerfectResume.ai
         </Link>
         <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
@@ -23,7 +24,8 @@ const ForgotPasswordPage = () => {
               <div className="mb-5">
                 <label
                   htmlFor="email"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
                   Email
                 </label>
                 <input
@@ -37,7 +39,8 @@ const ForgotPasswordPage = () => {
 
               <button
                 type="submit"
-                className="text-white bg-accent hover:opacity-95 focus:ring-4 focus:outline-none  focus:ring-accent-300 font-medium rounded-lg text-sm w-full px-5 py-4 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                className="text-white bg-accent hover:opacity-95 focus:ring-4 focus:outline-none  focus:ring-accent-300 font-medium rounded-lg text-sm w-full px-5 py-4 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              >
                 Continue
               </button>
             </form>
@@ -45,7 +48,8 @@ const ForgotPasswordPage = () => {
               <p className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
                 <Link
                   to={"/"}
-                  className="text-primary hover:underline ml-2 focus:outline-accent dark:text-blue-500">
+                  className="text-primary hover:underline ml-2 focus:outline-accent dark:text-blue-500"
+                >
                   Back to PerfectResume.ai
                 </Link>
               </p>

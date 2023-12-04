@@ -12,10 +12,11 @@ const LoginPage = () => {
   return (
     <section className="bg-gray-50 dark:bg-gray-900">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-        <Link to={"/"}>
-          <a className="flex items-center mb-6 text-2xl font-semibold text-primary focus:outline-accent dark:text-white">
-            Perfectresume.ai
-          </a>
+        <Link
+          to={"/"}
+          className="flex items-center mb-6 text-2xl font-semibold text-primary focus:outline-accent dark:text-white"
+        >
+          PerfectResume.ai
         </Link>
         <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
@@ -27,7 +28,8 @@ const LoginPage = () => {
               <div className="mb-5">
                 <label
                   htmlFor="email"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
                   Email
                 </label>
                 <input
@@ -41,7 +43,8 @@ const LoginPage = () => {
               <div className="mb-5">
                 <label
                   htmlFor="password"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
                   Password
                 </label>
                 <div className="relative">
@@ -51,14 +54,16 @@ const LoginPage = () => {
                         <button
                           className="text-gray-700"
                           type="button"
-                          onClick={() => togglePasswordVisibility(false)}>
+                          onClick={() => togglePasswordVisibility(false)}
+                        >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
                             viewBox="0 0 24 24"
                             strokeWidth={1.5}
                             stroke="currentColor"
-                            className="w-6 h-6 pointer-events-none">
+                            className="w-6 h-6 pointer-events-none"
+                          >
                             <path
                               strokeLinecap="round"
                               strokeLinejoin="round"
@@ -72,14 +77,16 @@ const LoginPage = () => {
                         <button
                           className="text-gray-700"
                           type="button"
-                          onClick={() => togglePasswordVisibility(true)}>
+                          onClick={() => togglePasswordVisibility(true)}
+                        >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
                             viewBox="0 0 24 24"
                             strokeWidth={1.5}
                             stroke="currentColor"
-                            className="w-6 h-6 pointer-events-none">
+                            className="w-6 h-6 pointer-events-none"
+                          >
                             <path
                               strokeLinecap="round"
                               strokeLinejoin="round"
@@ -106,15 +113,17 @@ const LoginPage = () => {
                 </div>
               </div>
               <div className="flex items-start mb-5">
-                <Link to={"/forgot-password"}>
-                  <a className="font-medium text-primary focus:outline-accent dark:text-blue-500 hover:underline">
-                    Forgot password?
-                  </a>
+                <Link
+                  to={"/forgot-password"}
+                  className="font-medium text-primary focus:outline-accent dark:text-blue-500 hover:underline"
+                >
+                  Forgot password?
                 </Link>
               </div>
               <button
                 type="submit"
-                className="text-white bg-accent hover:opacity-95 focus:ring-4 focus:outline-none  focus:ring-accent-300 font-medium rounded-lg text-sm w-full px-5 py-4 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                className="text-white bg-accent hover:opacity-95 focus:ring-4 focus:outline-none  focus:ring-accent-300 font-medium rounded-lg text-sm w-full px-5 py-4 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              >
                 Login
               </button>
             </form>
@@ -123,7 +132,8 @@ const LoginPage = () => {
                 Don&apos;t have an account?
                 <Link
                   to={"/signup"}
-                  className="text-primary hover:underline ml-2 focus:outline-accent dark:text-blue-500">
+                  className="text-primary hover:underline ml-2 focus:outline-accent dark:text-blue-500"
+                >
                   Sign up
                 </Link>
               </p>
