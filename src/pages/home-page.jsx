@@ -35,7 +35,7 @@ const HomePage = () => {
                     Craft a{" "}
                     <strong className="text-primary font-bold">
                       {" "}
-                      Proffessional{" "}
+                      Professional{" "}
                     </strong>{" "}
                     Resume with an Integrated Feedback System, with the power of
                     <span className="text-primary mx-1 whitespace-nowrap">
