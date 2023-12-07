@@ -1,4 +1,3 @@
-import Navbar from "src/components/navbar";
 import perfectResumeIllustration from "src/assets/landing-page-illustration.png";
 import resume1 from "src/assets/templates/resume-1.png";
 import resume2 from "src/assets/templates/resume-2.png";
@@ -14,14 +13,36 @@ import feature2 from "src/assets/features/feature-2.png";
 import feature3 from "src/assets/features/feature-3.png";
 import { sections } from "src/constants/constants";
 import Icon from "src/components/icon";
+import { useNavigate } from "react-router-dom";
+import Navbar from "src/components/navbar";
+import { Carousel } from "flowbite-react";
 
 const resumes = [resume1, resume2, resume3, resume4, resume5, resume6];
-console.log(resumes);
+
+("use client");
+
+const CarouselSlider = () => {
+  return (
+    <div className="h-96 mt-4">
+      <Carousel pauseOnHover className="bg-gray-400 rounded">
+        {resumes.map((resume, index) => {
+          return (
+            <div key={`resume-template-${index}`} className="w-[220px]">
+              <img src={resume} alt="Resume template" />
+            </div>
+          );
+        })}
+      </Carousel>
+    </div>
+  );
+};
 
 const HomePage = () => {
+  const navigate = useNavigate();
   return (
     <div className="h-screen overflow-auto">
       <Navbar />
+      {/* <NavbarComponent /> */}
       <div data-section={sections.home}>
         <section name={sections.home}>
           <div
@@ -47,6 +68,7 @@ const HomePage = () => {
                   <button
                     type="button"
                     className="text-white bg-accent hover:bg-accent-900 focus:ring-4 focus:outline-none  focus:ring-accent-300 font-medium rounded text-sm px-5 py-2.5 me-2 mb-2 mt-6"
+                    onClick={() => navigate("/signup")}
                   >
                     Craft your resume
                   </button>
@@ -62,6 +84,7 @@ const HomePage = () => {
           </div>
         </section>
       </div>
+
       <div data-section={sections.templates}>
         <section name={sections.templates}>
           <div
@@ -81,7 +104,10 @@ const HomePage = () => {
                   </p>
                 </div>
                 <div className="max-w-5xl w-full">
-                  <div className="grid grid-cols-[repeat(auto-fill,_minmax(200px,220px))] justify-items-center justify-center gap-8 mt-8">
+                  <div className="block min-[516px]:hidden">
+                    <CarouselSlider />
+                  </div>
+                  <div className="hidden min-[516px]:grid grid-cols-[repeat(auto-fill,_minmax(200px,220px))] justify-items-center justify-center gap-8 mt-8 ">
                     {resumes.map((resume, index) => {
                       return (
                         <div
@@ -209,6 +235,7 @@ const HomePage = () => {
                   <button
                     type="button"
                     className="text-white bg-accent hover:bg-accent-900 focus:ring-4 focus:outline-none  focus:ring-accent-300 font-medium rounded text-sm px-5 py-2.5 me-2 mb-2 mt-6"
+                    onClick={() => navigate("/signup")}
                   >
                     Craft your resume
                   </button>

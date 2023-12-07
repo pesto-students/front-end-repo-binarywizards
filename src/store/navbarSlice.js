@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const hash = window.location.hash;
 const initialState = {
-  activeSection: "#",
+  activeSection: hash ? hash.replace("#", "") : "home",
 };
 
 export const navbarSlice = createSlice({
