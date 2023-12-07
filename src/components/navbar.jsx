@@ -2,6 +2,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setActiveSection } from "src/store/navbarSlice";
 import { sections } from "src/constants/constants";
+import { initFlowbite } from "flowbite";
+import { useEffect } from "react";
 
 const Navbar = () => {
   const { activeSection } = useSelector((state) => state.navbarState);
@@ -11,6 +13,10 @@ const Navbar = () => {
   const handleActiveSection = (section) => {
     dispatch(setActiveSection({ activeSection: section }));
   };
+
+  useEffect(() => {
+    initFlowbite();
+  }, []);
 
   return (
     <nav className="bg-white dark:bg-gray-900 fixed w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600">
@@ -74,7 +80,7 @@ const Navbar = () => {
                 href={`#${sections.home}`}
                 className={`block py-2 px-3 ${
                   activeSection === sections.home
-                    ? "text-primary"
+                    ? "text-white bg-accent hover:bg-accent hover:text-white md:text-primary md:bg-transparent md:hover:bg-transparent md:hover:text-primary"
                     : "text-gray-900"
                 } rounded hover:bg-gray-100 md:hover:bg-transparent hover:text-primary md:p-0`}
                 aria-current="page"
@@ -88,7 +94,7 @@ const Navbar = () => {
                 href={`#${sections.templates}`}
                 className={`block py-2 px-3 ${
                   activeSection === sections.templates
-                    ? "text-primary"
+                    ? "text-white bg-accent hover:bg-accent hover:text-white md:text-primary md:bg-transparent md:hover:bg-transparent md:hover:text-primary"
                     : "text-gray-900"
                 } rounded hover:bg-gray-100 md:hover:bg-transparent hover:text-primary md:p-0`}
                 onClick={() => handleActiveSection(sections.templates)}
@@ -101,7 +107,7 @@ const Navbar = () => {
                 href={`#${sections.features}`}
                 className={`block py-2 px-3 ${
                   activeSection === sections.features
-                    ? "text-primary"
+                    ? "text-white bg-accent hover:bg-accent hover:text-white md:text-primary md:bg-transparent md:hover:bg-transparent md:hover:text-primary"
                     : "text-gray-900"
                 } rounded hover:bg-gray-100 md:hover:bg-transparent hover:text-primary md:p-0`}
                 onClick={() => handleActiveSection(sections.features)}
@@ -114,7 +120,7 @@ const Navbar = () => {
                 href={`#${sections.about}`}
                 className={`block py-2 px-3 ${
                   activeSection === sections.about
-                    ? "text-primary"
+                    ? "text-white bg-accent hover:bg-accent hover:text-white md:text-primary md:bg-transparent md:hover:bg-transparent md:hover:text-primary"
                     : "text-gray-900"
                 } rounded hover:bg-gray-100 md:hover:bg-transparent hover:text-primary md:p-0`}
                 onClick={() => handleActiveSection(sections.about)}

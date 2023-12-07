@@ -25,7 +25,7 @@ const router = createBrowserRouter([
 
 function Router() {
   return (
-    <div>
+    <div className="h-full">
       <RouterProvider router={router}></RouterProvider>
     </div>
   );
