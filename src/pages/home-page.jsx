@@ -14,11 +14,13 @@ import feature2 from "src/assets/features/feature-2.png";
 import feature3 from "src/assets/features/feature-3.png";
 import { sections } from "src/constants/constants";
 import Icon from "src/components/icon";
+import { useNavigate } from "react-router-dom";
 
 const resumes = [resume1, resume2, resume3, resume4, resume5, resume6];
 console.log(resumes);
 
 const HomePage = () => {
+  const navigate = useNavigate();
   return (
     <div className="h-screen overflow-auto">
       <Navbar />
@@ -47,6 +49,7 @@ const HomePage = () => {
                   <button
                     type="button"
                     className="text-white bg-accent hover:bg-accent-900 focus:ring-4 focus:outline-none  focus:ring-accent-300 font-medium rounded text-sm px-5 py-2.5 me-2 mb-2 mt-6"
+                    onClick={() => navigate("/signup")}
                   >
                     Craft your resume
                   </button>
@@ -209,6 +212,7 @@ const HomePage = () => {
                   <button
                     type="button"
                     className="text-white bg-accent hover:bg-accent-900 focus:ring-4 focus:outline-none  focus:ring-accent-300 font-medium rounded text-sm px-5 py-2.5 me-2 mb-2 mt-6"
+                    onClick={() => navigate("/signup")}
                   >
                     Craft your resume
                   </button>
