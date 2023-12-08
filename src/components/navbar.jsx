@@ -4,14 +4,17 @@ import { setActiveSection } from "src/store/navbarSlice";
 import { sections } from "src/constants/constants";
 import { initFlowbite } from "flowbite";
 import { useEffect } from "react";
+import { useRef } from "react";
 
 const Navbar = () => {
   const { activeSection } = useSelector((state) => state.navbarState);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const hamburgerRef = useRef();
 
   const handleActiveSection = (section) => {
     dispatch(setActiveSection({ activeSection: section }));
+    hamburgerRef.current.click();
   };
 
   useEffect(() => {
@@ -46,6 +49,7 @@ const Navbar = () => {
           </button>
 
           <button
+            ref={hamburgerRef}
             data-collapse-toggle="navbar-sticky"
             type="button"
             className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
