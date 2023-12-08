@@ -81,8 +81,8 @@ const Navbar = () => {
                 className={`block py-2 px-3 ${
                   activeSection === sections.home
                     ? "text-white bg-accent hover:bg-accent hover:text-white md:text-primary md:bg-transparent md:hover:bg-transparent md:hover:text-primary"
-                    : "text-gray-900"
-                } rounded hover:bg-gray-100 md:hover:bg-transparent hover:text-primary md:p-0`}
+                    : "text-gray-900 hover:bg-gray-100 hover:text-primary"
+                } rounded  md:hover:bg-transparent  md:p-0`}
                 aria-current="page"
                 onClick={() => handleActiveSection(sections.home)}
               >
@@ -95,8 +95,8 @@ const Navbar = () => {
                 className={`block py-2 px-3 ${
                   activeSection === sections.templates
                     ? "text-white bg-accent hover:bg-accent hover:text-white md:text-primary md:bg-transparent md:hover:bg-transparent md:hover:text-primary"
-                    : "text-gray-900"
-                } rounded hover:bg-gray-100 md:hover:bg-transparent hover:text-primary md:p-0`}
+                    : "text-gray-900 hover:bg-gray-100 hover:text-primary"
+                } rounded  md:hover:bg-transparent  md:p-0`}
                 onClick={() => handleActiveSection(sections.templates)}
               >
                 Templates
@@ -108,8 +108,8 @@ const Navbar = () => {
                 className={`block py-2 px-3 ${
                   activeSection === sections.features
                     ? "text-white bg-accent hover:bg-accent hover:text-white md:text-primary md:bg-transparent md:hover:bg-transparent md:hover:text-primary"
-                    : "text-gray-900"
-                } rounded hover:bg-gray-100 md:hover:bg-transparent hover:text-primary md:p-0`}
+                    : "text-gray-900 hover:bg-gray-100 hover:text-primary"
+                } rounded  md:hover:bg-transparent  md:p-0`}
                 onClick={() => handleActiveSection(sections.features)}
               >
                 Features
@@ -121,14 +121,31 @@ const Navbar = () => {
                 className={`block py-2 px-3 ${
                   activeSection === sections.about
                     ? "text-white bg-accent hover:bg-accent hover:text-white md:text-primary md:bg-transparent md:hover:bg-transparent md:hover:text-primary"
-                    : "text-gray-900"
-                } rounded hover:bg-gray-100 md:hover:bg-transparent hover:text-primary md:p-0`}
+                    : "text-gray-900 hover:bg-gray-100 hover:text-primary"
+                } rounded  md:hover:bg-transparent  md:p-0`}
                 onClick={() => handleActiveSection(sections.about)}
               >
                 About Us
               </a>
             </li>
           </ul>
+
+          <div className="flex items-center mt-3 mx-4 sm:hidden">
+            <button
+              type="button"
+              className="py-2.5 px-5 me-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-accent focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+              onClick={() => navigate("/login")}
+            >
+              Login
+            </button>
+            <button
+              type="button"
+              className="text-white bg-accent hover:bg-accent-900 focus:ring-4  focus:outline-none  focus:ring-accent-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 dark:bg-blue-600 dark:hover:bg-blue-700"
+              onClick={() => navigate("/signup")}
+            >
+              Sign Up
+            </button>
+          </div>
         </div>
       </div>
     </nav>
