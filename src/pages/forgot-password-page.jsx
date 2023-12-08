@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 const ForgotPasswordPage = () => {
   return (
-    <div className="h-full bg-gray-50 dark:bg-gray-900 ">
+    <div className="h-full flex flex-col justify-center bg-gray-50 dark:bg-gray-900 ">
       <section>
         <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
           <Link
