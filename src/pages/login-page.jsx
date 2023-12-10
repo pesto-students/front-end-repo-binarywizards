@@ -1,12 +1,37 @@
 import Tippy from "@tippyjs/react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
+import useAuth from "src/hooks/useAuth";
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+  let [searchParams] = useSearchParams();
+  const redirect = searchParams.get("redirect");
+  const { authorize } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
 
   const togglePasswordVisibility = (flag) => {
     setShowPassword(flag);
+  };
+
+  const resolveRedirection = (path, redirect) => {
+    console.log("redirect: ", redirect);
+    return redirect ? `${path}?redirect=${redirect}` : path;
+  };
+
+  const handleSubmit = async () => {
+    const credentials = {
+      username: "testinguser2",
+      password: "abc123",
+    };
+    const success = await authorize(credentials);
+    if (success) {
+      console.log("success: ", success);
+      navigate("/app");
+    } else {
+      //show error toast
+      console.log("Failed: ", success);
+    }
   };
 
   return (
@@ -14,7 +39,7 @@ const LoginPage = () => {
       <section>
         <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
           <Link
-            to={"/"}
+            to={resolveRedirection("/", redirect)}
             className="flex items-center mb-6 text-2xl font-semibold text-primary focus:outline-accent dark:text-white"
           >
             PerfectResume.ai
@@ -115,15 +140,16 @@ const LoginPage = () => {
                 </div>
                 <div className="flex items-start mb-5">
                   <Link
-                    to={"/forgot-password"}
+                    to={resolveRedirection("/forgot-password", redirect)}
                     className="font-medium text-primary focus:outline-accent dark:text-blue-500 hover:underline"
                   >
                     Forgot password?
                   </Link>
                 </div>
                 <button
-                  type="submit"
+                  type="button"
                   className="text-white bg-accent hover:opacity-95 focus:ring-4 focus:outline-none  focus:ring-accent-300 font-medium rounded-lg text-sm w-full px-5 py-4 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  onClick={() => handleSubmit()}
                 >
                   Login
                 </button>
@@ -132,7 +158,7 @@ const LoginPage = () => {
                 <p className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
                   Don&apos;t have an account?
                   <Link
-                    to={"/signup"}
+                    to={resolveRedirection("/signup", redirect)}
                     className="text-primary hover:underline ml-2 focus:outline-accent dark:text-blue-500"
                   >
                     Sign up
