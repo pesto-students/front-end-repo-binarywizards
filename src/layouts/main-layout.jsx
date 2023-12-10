@@ -3,14 +3,12 @@ import AppNavbar from "src/components/app-navbar";
 
 const MainLayout = () => {
   return (
-    <>
-      <div>
-        <AppNavbar />
-      </div>
-      <div>
+    <div className="flex flex-col h-full overflow-auto">
+      <AppNavbar />
+      <div className="flex-1">
         <Outlet />
       </div>
-    </>
+    </div>
   );
 };
 
