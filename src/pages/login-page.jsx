@@ -21,7 +21,7 @@ const LoginPage = () => {
 
   const handleSubmit = async () => {
     const credentials = {
-      username: "testinguser2",
+      email: "testinguser2",
       password: "abc123",
     };
     const success = await authorize(credentials);

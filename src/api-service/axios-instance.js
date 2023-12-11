@@ -1,9 +1,10 @@
 import { default as axios } from "axios";
 // const api = "https://perfectresume-ai.onrender.com";
-const dev = "http://localhost:5500";
+// const dev = "http://localhost:5500";
+const backend = "http://localhost:3000";
 
 const instance = axios.create({
-  baseURL: dev,
+  baseURL: backend,
   withCredentials: true,
   timeout: 1000,
 });
