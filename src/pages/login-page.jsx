@@ -2,7 +2,7 @@ import Tippy from "@tippyjs/react";
 import { useRef, useState } from "react";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import useAuth from "src/hooks/useAuth";
-import { formValidator } from "src/utils/form-validatior";
+import { formValidator } from "src/utils/form-validator";
 
 const LoginPage = () => {
   const navigate = useNavigate();
