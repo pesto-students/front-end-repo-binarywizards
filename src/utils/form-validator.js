@@ -1,15 +1,4 @@
-const isArray = (value) => Array.isArray(value);
-
-function normalizeToArray(value) {
-  return [].concat(value);
-}
-function normalizeToString(value) {
-  return value + "";
-}
-
-function arrayFrom(value) {
-  return [].slice.call(value);
-}
+import { normalizeToArray, normalizeToString } from "./utils";
 
 const formValidator = (formData, validations) => {
   let valid = true;
@@ -47,10 +36,4 @@ const formValidator = (formData, validations) => {
   return valid;
 };
 
-export {
-  formValidator,
-  arrayFrom,
-  isArray,
-  normalizeToArray,
-  normalizeToString,
-};
+export { formValidator };

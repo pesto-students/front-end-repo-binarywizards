@@ -14,6 +14,7 @@ import useAuth from "./hooks/useAuth";
 import MainLayout from "./layouts/main-layout";
 import BuildResume from "./pages/app/build-resume-page";
 import ReviewSystem from "./pages/app/review-system-page";
+import CreateTemplate from "./pages/app/create-template";
 
 const PublicRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
@@ -89,6 +90,14 @@ const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <ReviewSystem />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "create-template",
+        element: (
+          <PrivateRoute>
+            <CreateTemplate />
           </PrivateRoute>
         ),
       },
