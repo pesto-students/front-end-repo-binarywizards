@@ -1,4 +1,4 @@
-const prefix = "api/v1";
+const prefix = "auth";
 
 const api = {
   auth: {

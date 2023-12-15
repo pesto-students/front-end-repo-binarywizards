@@ -41,7 +41,6 @@ const LoginPage = () => {
     const credentials = { username: email.value, password: password.value };
     const success = await authorize(credentials);
     if (success) {
-      console.log("success: ", success);
       navigate("/app");
     } else {
       //show error toast

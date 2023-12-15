@@ -1038,6 +1038,28 @@ const metaData = {
     lastName: "Palmerston",
     role: "ML ENGINEER",
   },
+  workExperience: [
+    {
+      title: "QuantumAI Labs",
+      role: "ML Engineer",
+      startDate: "Apr 2019",
+      endDate: "Present",
+      pointOne:
+        "Utilized PySpark to distribute data processing on large streaming datasets to improve ingestion and processing speed of that daat by 87%",
+      pointTwo:
+        "Build basic ETL that ingested transactional and event data from a web app with 10,000 daily active users that saved over $85,000 annually in external vendor costs",
+    },
+    {
+      title: "Intellecta AI",
+      subTitle: "ML Engineer",
+      startDate: "Apr 2019",
+      endDate: "Dec 2021",
+      pointOne:
+        "Utilized PySpark to distribute data processing on large streaming datasets to improve ingestion and processing speed of that daat by 87%",
+      pointTwo:
+        "Build basic ETL that ingested transactional and event data from a web app with 10,000 daily active users that saved over $85,000 annually in external vendor costs",
+    },
+  ],
 };
 
 const dataSchema = {
@@ -1046,22 +1068,38 @@ const dataSchema = {
       type: "input",
       key: "firstName",
       label: "First Name",
-      value: "Adeline",
-      placeholder: "First Name",
+      value: "",
+      placeholder: "e.g John",
     },
     {
       type: "input",
       key: "lastName",
       label: "Last Name",
-      value: "Palmerston",
-      placeholder: "Last Name",
+      value: "",
+      placeholder: "e.g Doe",
     },
     {
       type: "input",
       key: "role",
       label: "Role",
-      value: "ML Engineer",
-      placeholder: "e.g. ML Engineer",
+      value: "",
+      placeholder: "e.g ML Engineer",
+    },
+  ],
+  section: [
+    {
+      type: "input",
+      key: "title",
+      label: "Title",
+      value: "",
+      placeholder: "",
+    },
+    {
+      type: "input",
+      key: "role",
+      label: "Role / Responsibility / Course",
+      value: "",
+      placeholder: "e.g ",
     },
   ],
 };
@@ -2230,6 +2268,115 @@ const template2 = {
                             {
                               type: "text",
                               content: "Intellecta AI",
+                            },
+                          ],
+                        },
+                        {
+                          type: "element",
+                          tagName: "p",
+                          attributes: {
+                            class: "text-[11px] leading-4 text-[#6B7280] mt-2",
+                          },
+                          className:
+                            "text-[11px] leading-4 text-[#6B7280] mt-2",
+                          children: [
+                            {
+                              type: "text",
+                              content: "ML ENGINEER | Jan 2020 - Dec 2021",
+                            },
+                          ],
+                        },
+                        {
+                          type: "element",
+                          tagName: "div",
+                          attributes: {
+                            class: "flex flex-row items-baseline mt-2",
+                          },
+                          className: "flex flex-row items-baseline mt-2",
+                          children: [
+                            {
+                              type: "element",
+                              tagName: "span",
+                              attributes: {
+                                class: "p-0.5 mr-2 rounded-full bg-[#19010A]",
+                              },
+                              className: "p-0.5 mr-2 rounded-full bg-[#19010A]",
+                              children: [],
+                            },
+                            {
+                              type: "element",
+                              tagName: "p",
+                              attributes: {
+                                class: "text-[11px] leading-4 text-[#6B7280]",
+                              },
+                              className: "text-[11px] leading-4 text-[#6B7280]",
+                              children: [
+                                {
+                                  type: "text",
+                                  content:
+                                    "Utilized PySpark to distribute data processing on large streaming datasets to improve ingestion and processing speed of that daat by 87%",
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                        {
+                          type: "element",
+                          tagName: "div",
+                          attributes: {
+                            class: "flex flex-row items-baseline mt-2",
+                          },
+                          className: "flex flex-row items-baseline mt-2",
+                          children: [
+                            {
+                              type: "element",
+                              tagName: "span",
+                              attributes: {
+                                class: "p-0.5 mr-2 rounded-full bg-[#19010A]",
+                              },
+                              className: "p-0.5 mr-2 rounded-full bg-[#19010A]",
+                              children: [],
+                            },
+                            {
+                              type: "element",
+                              tagName: "p",
+                              attributes: {
+                                class: "text-[11px] leading-4 text-[#6B7280]",
+                              },
+                              className: "text-[11px] leading-4 text-[#6B7280]",
+                              children: [
+                                {
+                                  type: "text",
+                                  content:
+                                    "Utilized PySpark to distribute data processing on large streaming datasets to improve ingestion and processing speed of that daat by 87%",
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    {
+                      type: "element",
+                      tagName: "div",
+                      attributes: {
+                        class: "template-workexperience-section--one mt-4",
+                      },
+                      className: "template-workexperience-section--one mt-4",
+                      children: [
+                        {
+                          type: "element",
+                          tagName: "h1",
+                          attributes: {
+                            class:
+                              "text-xs leading-none text-[#374151] uppercase font-bold mb-2",
+                          },
+                          className:
+                            "text-xs leading-none text-[#374151] uppercase font-bold mb-2",
+                          children: [
+                            {
+                              type: "text",
+                              content: "Intellecta AI 2",
                             },
                           ],
                         },
