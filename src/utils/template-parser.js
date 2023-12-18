@@ -1,4 +1,5 @@
-import { isArray, normalizeToArray } from "./utils";
+import { validator } from "@exodus/schemasafe";
+import { isArray, isObject } from "./utils";
 
 const ignoreTags = ["input", "form", "select", "textarea", "script"];
 function createJSONFromHTML(node) {
@@ -65,12 +66,21 @@ function createHTMLFromJSON(json, data) {
 
   // Handle blocks
   if (json.type === "block") {
-    const blockName = json["blockName"];
-    const blocks = data[blockName];
-    if (blocks && blocks.length) {
+    const blocksData = data;
+    if (blocksData && blocksData.length) {
       const blockJson = { ...json, type: "element" };
-      const blockElements = blocks.map((block) => {
-        return createHTMLFromJSON(blockJson, block);
+      const blockElements = blocksData.map((blockData) => {
+        let blockElement = null;
+        if (blockJson.data) {
+          if (!validateData(blockJson.data.schema, blockData)) return null;
+          let childData = blockJson.data.key
+            ? blockData[blockJson.data.key]
+            : blockData;
+          blockElement = createHTMLFromJSON(blockJson, childData);
+        } else {
+          blockElement = createHTMLFromJSON(blockJson, blockData);
+        }
+        return blockElement;
       });
       return blockElements;
     }
@@ -78,9 +88,9 @@ function createHTMLFromJSON(json, data) {
 
   // Handle element nodes
   if (json.type === "element") {
-    if (json.dataCheck && !checkDataAvailableOrNot(json.dataCheck, data)) {
-      return false;
-    }
+    // if (json.data && !validateData(json.data.schema, data)) {
+    //   return false;
+    // }
     element = document.createElement(json.tagName);
 
     // Set attributes
@@ -103,10 +113,19 @@ function createHTMLFromJSON(json, data) {
     // Process children
     if (json.children) {
       json.children.forEach((childJson) => {
-        let childElement = createHTMLFromJSON(childJson, data);
+        let childElement = null;
+        if (childJson.type !== "block" && childJson.data) {
+          if (!validateData(childJson.data.schema, data)) return;
+          let childData = childJson.data.key ? data[childJson.data.key] : data;
+          childElement = createHTMLFromJSON(childJson, childData);
+        } else {
+          childElement = createHTMLFromJSON(childJson, data);
+        }
+
         if (childElement) {
           if (isArray(childElement)) {
             childElement.forEach((child) => {
+              if (!child) return;
               element.appendChild(child);
             });
           } else {
@@ -125,55 +144,23 @@ function createHTMLFromJSON(json, data) {
   return element;
 }
 
-const checkDataAvailableOrNot = (prop, data) => {
-  let props = normalizeToArray(prop);
-  const [check, ...rest] = props;
-  let typeOfCheck = check === "OR" ? "OR" : "AND";
-  props = typeOfCheck === "OR" ? rest : props;
-  let booleans = props.map((prop) => {
-    if (data[prop]) {
-      return true;
-    } else {
-      return false;
-    }
+function validateData(schema, data) {
+  const validate = validator({
+    ...schema,
   });
-  let hasData = checkBooleans(booleans, typeOfCheck);
-
-  return hasData;
-};
-
-function checkBooleans(booleans, typeOfCheck) {
-  if (typeOfCheck === "OR") {
-    // Return true if at least one element is true
-    return booleans.reduce((acc, val) => acc || val, false);
-  } else if (typeOfCheck === "AND") {
-    // Return true only if all elements are true
-    return booleans.reduce((acc, val) => acc && val, true);
-  } else {
-    // Handle unexpected typeOfCheck values
-    throw new Error("Invalid typeOfCheck value. Must be 'OR' or 'AND'.");
-  }
+  return validate(data);
 }
 
 const placeholderRegex = /{([\w.-]+)}/g;
 function replacePlaceholders(str, data) {
+  // console.log(str, ": ", data);
   return str.replace(placeholderRegex, (match, key) => {
-    // Split the key by '.' to access nested properties
-    const keys = key.split(".");
     let currentValue = data;
-
-    // Iterate through the keys to access the nested property
-    for (const k of keys) {
-      if (
-        currentValue !== null &&
-        currentValue !== undefined &&
-        k in currentValue
-      ) {
-        currentValue = currentValue[k];
-      } else {
-        // If the key doesn't exist, return an empty string
-        return "";
-      }
+    if (isObject(data)) {
+      currentValue = data[key];
+    }
+    if (isArray(data)) {
+      currentValue = data[key];
     }
 
     // Replace with the value; if null or undefined, use an empty string

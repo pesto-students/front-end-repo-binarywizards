@@ -4,11 +4,21 @@ const metaData = {
     lastName: "Palmerston",
     role: "ML ENGINEER",
   },
+  personalProfile: {
+    objective:
+      "A Python developer with 5.8 years of experience in Django, Flask for Retail eCommerce, POS and Storage domain.",
+  },
+  contactInfo: {
+    address: "3205 Eden Drive, Glen All Virginia - 23060",
+    email: "palmerston@mail.com",
+    phone: "123-456-789",
+  },
+
   skills: [
-    { skill: "Python", score: "5" },
-    { skill: "Tensorflow", score: "3" },
-    { skill: "Keras", score: "2" },
-    { skill: "Django", score: "4" },
+    { skill: "Python" },
+    { skill: "Tensorflow" },
+    { skill: "Keras" },
+    { skill: "Django" },
   ],
   workExperience: [
     {
@@ -28,9 +38,12 @@ const metaData = {
       endDate: "Apr 2019",
       pointOne:
         "Utilized PySpark to distribute data processing on large streaming datasets to improve ingestion and processing speed of that daat by 87%",
-      // pointTwo:
-      //   "Build basic ETL that ingested transactional and event data from a web app with 10,000 daily active users that saved over $85,000 annually in external vendor costs",
     },
+  ],
+  achievements: [
+    "Most Outstanding Employee of the Year, Pixelpoint Hive (2015)",
+    "Best Mobile App Design, HGFZ Graduate Center (2014)",
+    "Design Award, Cliffmoor College (2012)",
   ],
 };
 
@@ -58,20 +71,14 @@ const dataSchema = {
       placeholder: "e.g ML Engineer",
     },
   ],
-  section: [
+  personalProfile: [
     {
       type: "input",
-      key: "title",
-      label: "Title",
+      key: "objective",
+      label: "Objective",
       value: "",
-      placeholder: "",
-    },
-    {
-      type: "input",
-      key: "role",
-      label: "Role / Responsibility / Course",
-      value: "",
-      placeholder: "e.g ",
+      placeholder:
+        "e.g A Python developer with 5.8 years of experience in Django, Flask for Retail eCommerce, POS and Storage domain.",
     },
   ],
 };
@@ -143,6 +150,16 @@ const template2 = {
             },
             {
               type: "element",
+              data: {
+                key: "contactInfo",
+                schema: {
+                  type: "object",
+                  required: ["contactInfo"],
+                  properties: {
+                    contactInfo: { type: "object" },
+                  },
+                },
+              },
               tagName: "div",
               attributes: {
                 class: "template-contact-section mx-4 mt-6",
@@ -167,6 +184,16 @@ const template2 = {
                 },
                 {
                   type: "element",
+                  data: {
+                    key: "address",
+                    schema: {
+                      type: "object",
+                      required: ["address"],
+                      properties: {
+                        address: { type: "string" },
+                      },
+                    },
+                  },
                   tagName: "div",
                   attributes: {
                     class: "flex items-start",
@@ -219,7 +246,7 @@ const template2 = {
                       children: [
                         {
                           type: "text",
-                          content: "3205 Eden Drive, Glen All Virginia - 23060",
+                          content: "{address}",
                         },
                       ],
                     },
@@ -227,6 +254,16 @@ const template2 = {
                 },
                 {
                   type: "element",
+                  data: {
+                    key: "email",
+                    schema: {
+                      type: "object",
+                      required: ["email"],
+                      properties: {
+                        email: { type: "string" },
+                      },
+                    },
+                  },
                   tagName: "div",
                   attributes: {
                     class: "flex items-start mt-2",
@@ -279,7 +316,7 @@ const template2 = {
                       children: [
                         {
                           type: "text",
-                          content: "palmerston@mail.com",
+                          content: "{email}",
                         },
                       ],
                     },
@@ -287,6 +324,16 @@ const template2 = {
                 },
                 {
                   type: "element",
+                  data: {
+                    key: "phone",
+                    schema: {
+                      type: "object",
+                      required: ["phone"],
+                      properties: {
+                        phone: { type: "string" },
+                      },
+                    },
+                  },
                   tagName: "div",
                   attributes: {
                     class: "flex items-start mt-2",
@@ -339,7 +386,7 @@ const template2 = {
                       children: [
                         {
                           type: "text",
-                          content: "123-456-789",
+                          content: "{phone}",
                         },
                       ],
                     },
@@ -349,11 +396,27 @@ const template2 = {
             },
             {
               type: "element",
+              data: {
+                key: "skills",
+                schema: {
+                  type: "object",
+                  required: ["skills"],
+                  properties: {
+                    skills: {
+                      type: "array",
+                      minItems: 1,
+                      items: {
+                        type: "object",
+                      },
+                    },
+                  },
+                },
+              },
               tagName: "div",
               attributes: {
-                class: "template-contact-section mx-4 mt-6",
+                class: "template-skill-section mx-4 mt-6",
               },
-              className: "template-contact-section mx-4 mt-6",
+              className: "template-skill-section mx-4 mt-6",
               children: [
                 {
                   type: "element",
@@ -372,7 +435,17 @@ const template2 = {
                   ],
                 },
                 {
-                  type: "element",
+                  type: "block",
+                  data: {
+                    key: "skill",
+                    schema: {
+                      type: "object",
+                      required: ["skill"],
+                      properties: {
+                        skill: { type: "string" },
+                      },
+                    },
+                  },
                   tagName: "div",
                   attributes: {
                     class: "flex items-center",
@@ -398,42 +471,6 @@ const template2 = {
                           className: "rounded-full p-[3px] mr-[1px] bg-white",
                           children: [],
                         },
-                        {
-                          type: "element",
-                          tagName: "span",
-                          attributes: {
-                            class: "rounded-full p-[3px] mr-[1px] bg-white",
-                          },
-                          className: "rounded-full p-[3px] mr-[1px] bg-white",
-                          children: [],
-                        },
-                        {
-                          type: "element",
-                          tagName: "span",
-                          attributes: {
-                            class: "rounded-full p-[3px] mr-[1px] bg-white",
-                          },
-                          className: "rounded-full p-[3px] mr-[1px] bg-white",
-                          children: [],
-                        },
-                        {
-                          type: "element",
-                          tagName: "span",
-                          attributes: {
-                            class: "rounded-full p-[3px] mr-[1px] bg-white",
-                          },
-                          className: "rounded-full p-[3px] mr-[1px] bg-white",
-                          children: [],
-                        },
-                        {
-                          type: "element",
-                          tagName: "span",
-                          attributes: {
-                            class: "rounded-full p-[3px] mr-[1px] bg-white",
-                          },
-                          className: "rounded-full p-[3px] mr-[1px] bg-white",
-                          children: [],
-                        },
                       ],
                     },
                     {
@@ -446,256 +483,7 @@ const template2 = {
                       children: [
                         {
                           type: "text",
-                          content: "Python",
-                        },
-                      ],
-                    },
-                  ],
-                },
-                {
-                  type: "element",
-                  tagName: "div",
-                  attributes: {
-                    class: "flex items-center mt-2",
-                  },
-                  className: "flex items-center mt-2",
-                  children: [
-                    {
-                      type: "element",
-                      tagName: "div",
-                      attributes: {
-                        class:
-                          "mr-2 flex items-center justify-center text-[#B4C6FC]",
-                      },
-                      className:
-                        "mr-2 flex items-center justify-center text-[#B4C6FC]",
-                      children: [
-                        {
-                          type: "element",
-                          tagName: "span",
-                          attributes: {
-                            class: "rounded-full p-[3px] mr-[1px] bg-white",
-                          },
-                          className: "rounded-full p-[3px] mr-[1px] bg-white",
-                          children: [],
-                        },
-                        {
-                          type: "element",
-                          tagName: "span",
-                          attributes: {
-                            class: "rounded-full p-[3px] mr-[1px] bg-white",
-                          },
-                          className: "rounded-full p-[3px] mr-[1px] bg-white",
-                          children: [],
-                        },
-                        {
-                          type: "element",
-                          tagName: "span",
-                          attributes: {
-                            class: "rounded-full p-[3px] mr-[1px] bg-white",
-                          },
-                          className: "rounded-full p-[3px] mr-[1px] bg-white",
-                          children: [],
-                        },
-                        {
-                          type: "element",
-                          tagName: "span",
-                          attributes: {
-                            class: "rounded-full p-[3px] mr-[1px] bg-[#B4C6FC]",
-                          },
-                          className:
-                            "rounded-full p-[3px] mr-[1px] bg-[#B4C6FC]",
-                          children: [],
-                        },
-                        {
-                          type: "element",
-                          tagName: "span",
-                          attributes: {
-                            class: "rounded-full p-[3px] mr-[1px] bg-[#B4C6FC]",
-                          },
-                          className:
-                            "rounded-full p-[3px] mr-[1px] bg-[#B4C6FC]",
-                          children: [],
-                        },
-                      ],
-                    },
-                    {
-                      type: "element",
-                      tagName: "p",
-                      attributes: {
-                        class: "text-[11px] leading-4 text-white",
-                      },
-                      className: "text-[11px] leading-4 text-white",
-                      children: [
-                        {
-                          type: "text",
-                          content: "Tensorflow",
-                        },
-                      ],
-                    },
-                  ],
-                },
-                {
-                  type: "element",
-                  tagName: "div",
-                  attributes: {
-                    class: "flex items-center mt-2",
-                  },
-                  className: "flex items-center mt-2",
-                  children: [
-                    {
-                      type: "element",
-                      tagName: "div",
-                      attributes: {
-                        class:
-                          "mr-2 flex items-center justify-center text-[#B4C6FC]",
-                      },
-                      className:
-                        "mr-2 flex items-center justify-center text-[#B4C6FC]",
-                      children: [
-                        {
-                          type: "element",
-                          tagName: "span",
-                          attributes: {
-                            class: "rounded-full p-[3px] mr-[1px] bg-white",
-                          },
-                          className: "rounded-full p-[3px] mr-[1px] bg-white",
-                          children: [],
-                        },
-                        {
-                          type: "element",
-                          tagName: "span",
-                          attributes: {
-                            class: "rounded-full p-[3px] mr-[1px] bg-white",
-                          },
-                          className: "rounded-full p-[3px] mr-[1px] bg-white",
-                          children: [],
-                        },
-                        {
-                          type: "element",
-                          tagName: "span",
-                          attributes: {
-                            class: "rounded-full p-[3px] mr-[1px] bg-[#B4C6FC]",
-                          },
-                          className:
-                            "rounded-full p-[3px] mr-[1px] bg-[#B4C6FC]",
-                          children: [],
-                        },
-                        {
-                          type: "element",
-                          tagName: "span",
-                          attributes: {
-                            class: "rounded-full p-[3px] mr-[1px] bg-[#B4C6FC]",
-                          },
-                          className:
-                            "rounded-full p-[3px] mr-[1px] bg-[#B4C6FC]",
-                          children: [],
-                        },
-                        {
-                          type: "element",
-                          tagName: "span",
-                          attributes: {
-                            class: "rounded-full p-[3px] mr-[1px] bg-[#B4C6FC]",
-                          },
-                          className:
-                            "rounded-full p-[3px] mr-[1px] bg-[#B4C6FC]",
-                          children: [],
-                        },
-                      ],
-                    },
-                    {
-                      type: "element",
-                      tagName: "p",
-                      attributes: {
-                        class: "text-[11px] leading-4 text-white",
-                      },
-                      className: "text-[11px] leading-4 text-white",
-                      children: [
-                        {
-                          type: "text",
-                          content: "Keras",
-                        },
-                      ],
-                    },
-                  ],
-                },
-                {
-                  type: "element",
-                  tagName: "div",
-                  attributes: {
-                    class: "flex items-center mt-2",
-                  },
-                  className: "flex items-center mt-2",
-                  children: [
-                    {
-                      type: "element",
-                      tagName: "div",
-                      attributes: {
-                        class:
-                          "mr-2 flex items-center justify-center text-[#B4C6FC]",
-                      },
-                      className:
-                        "mr-2 flex items-center justify-center text-[#B4C6FC]",
-                      children: [
-                        {
-                          type: "element",
-                          tagName: "span",
-                          attributes: {
-                            class: "rounded-full p-[3px] mr-[1px] bg-white",
-                          },
-                          className: "rounded-full p-[3px] mr-[1px] bg-white",
-                          children: [],
-                        },
-                        {
-                          type: "element",
-                          tagName: "span",
-                          attributes: {
-                            class: "rounded-full p-[3px] mr-[1px] bg-white",
-                          },
-                          className: "rounded-full p-[3px] mr-[1px] bg-white",
-                          children: [],
-                        },
-                        {
-                          type: "element",
-                          tagName: "span",
-                          attributes: {
-                            class: "rounded-full p-[3px] mr-[1px] bg-white",
-                          },
-                          className: "rounded-full p-[3px] mr-[1px] bg-white",
-                          children: [],
-                        },
-                        {
-                          type: "element",
-                          tagName: "span",
-                          attributes: {
-                            class: "rounded-full p-[3px] mr-[1px] bg-white",
-                          },
-                          className: "rounded-full p-[3px] mr-[1px] bg-white",
-                          children: [],
-                        },
-                        {
-                          type: "element",
-                          tagName: "span",
-                          attributes: {
-                            class: "rounded-full p-[3px] mr-[1px] bg-[#B4C6FC]",
-                          },
-                          className:
-                            "rounded-full p-[3px] mr-[1px] bg-[#B4C6FC]",
-                          children: [],
-                        },
-                      ],
-                    },
-                    {
-                      type: "element",
-                      tagName: "p",
-                      attributes: {
-                        class: "text-[11px] leading-4 text-white",
-                      },
-                      className: "text-[11px] leading-4 text-white",
-                      children: [
-                        {
-                          type: "text",
-                          content: "Django",
+                          content: "{skill}",
                         },
                       ],
                     },
@@ -705,6 +493,20 @@ const template2 = {
             },
             {
               type: "element",
+              data: {
+                key: "achievements",
+                schema: {
+                  type: "object",
+                  required: ["achievements"],
+                  properties: {
+                    achievements: {
+                      type: "array",
+                      minItems: 1,
+                      items: { type: "string" },
+                    },
+                  },
+                },
+              },
               tagName: "div",
               attributes: {
                 class: "template-contact-section mx-4 mt-6",
@@ -728,12 +530,18 @@ const template2 = {
                   ],
                 },
                 {
-                  type: "element",
+                  type: "block",
+                  data: {
+                    schema: {
+                      type: "string",
+                      minLength: 1,
+                    },
+                  },
                   tagName: "div",
                   attributes: {
-                    class: "flex items-start",
+                    class: "flex items-start mt-1",
                   },
-                  className: "flex items-start",
+                  className: "flex items-start mt-1",
                   children: [
                     {
                       type: "element",
@@ -781,129 +589,7 @@ const template2 = {
                       children: [
                         {
                           type: "text",
-                          content:
-                            "Most Outstanding Employee of the Year, Pixelpoint Hive (2015)",
-                        },
-                      ],
-                    },
-                  ],
-                },
-                {
-                  type: "element",
-                  tagName: "div",
-                  attributes: {
-                    class: "flex items-start mt-2",
-                  },
-                  className: "flex items-start mt-2",
-                  children: [
-                    {
-                      type: "element",
-                      tagName: "div",
-                      attributes: {
-                        class:
-                          "w-[10px] h-[16px] mr-2 flex items-center justify-center text-[#B4C6FC]",
-                      },
-                      className:
-                        "w-[10px] h-[16px] mr-2 flex items-center justify-center text-[#B4C6FC]",
-                      children: [
-                        {
-                          type: "element",
-                          tagName: "svg",
-                          attributes: {
-                            xmlns: "http://www.w3.org/2000/svg",
-                            viewBox: "0 0 20 20",
-                            fill: "currentColor",
-                            class: "w-5 h-5",
-                          },
-                          className: "w-5 h-5",
-                          children: [
-                            {
-                              type: "element",
-                              tagName: "path",
-                              attributes: {
-                                "fill-rule": "evenodd",
-                                d: "M10 2c-1.716 0-3.408.106-5.07.31C3.806 2.45 3 3.414 3 4.517V17.25a.75.75 0 001.075.676L10 15.082l5.925 2.844A.75.75 0 0017 17.25V4.517c0-1.103-.806-2.068-1.93-2.207A41.403 41.403 0 0010 2z",
-                                "clip-rule": "evenodd",
-                              },
-                              className: "",
-                              children: [],
-                            },
-                          ],
-                        },
-                      ],
-                    },
-                    {
-                      type: "element",
-                      tagName: "p",
-                      attributes: {
-                        class: "text-[11px] leading-4 text-white",
-                      },
-                      className: "text-[11px] leading-4 text-white",
-                      children: [
-                        {
-                          type: "text",
-                          content:
-                            "Best Mobile App Design, HGFZ Graduate Center (2014)",
-                        },
-                      ],
-                    },
-                  ],
-                },
-                {
-                  type: "element",
-                  tagName: "div",
-                  attributes: {
-                    class: "flex items-start mt-2",
-                  },
-                  className: "flex items-start mt-2",
-                  children: [
-                    {
-                      type: "element",
-                      tagName: "div",
-                      attributes: {
-                        class:
-                          "w-[10px] h-[16px] mr-2 flex items-center justify-center text-[#B4C6FC]",
-                      },
-                      className:
-                        "w-[10px] h-[16px] mr-2 flex items-center justify-center text-[#B4C6FC]",
-                      children: [
-                        {
-                          type: "element",
-                          tagName: "svg",
-                          attributes: {
-                            xmlns: "http://www.w3.org/2000/svg",
-                            viewBox: "0 0 20 20",
-                            fill: "currentColor",
-                            class: "w-5 h-5",
-                          },
-                          className: "w-5 h-5",
-                          children: [
-                            {
-                              type: "element",
-                              tagName: "path",
-                              attributes: {
-                                "fill-rule": "evenodd",
-                                d: "M10 2c-1.716 0-3.408.106-5.07.31C3.806 2.45 3 3.414 3 4.517V17.25a.75.75 0 001.075.676L10 15.082l5.925 2.844A.75.75 0 0017 17.25V4.517c0-1.103-.806-2.068-1.93-2.207A41.403 41.403 0 0010 2z",
-                                "clip-rule": "evenodd",
-                              },
-                              className: "",
-                              children: [],
-                            },
-                          ],
-                        },
-                      ],
-                    },
-                    {
-                      type: "element",
-                      tagName: "p",
-                      attributes: {
-                        class: "text-[11px] leading-4 text-white",
-                      },
-                      className: "text-[11px] leading-4 text-white",
-                      children: [
-                        {
-                          type: "text",
-                          content: "Design Award, Cliffmoor College (2012)",
+                          content: "{index}",
                         },
                       ],
                     },
@@ -923,6 +609,16 @@ const template2 = {
           children: [
             {
               type: "element",
+              data: {
+                key: "titleSection",
+                schema: {
+                  type: "object",
+                  required: ["titleSection"],
+                  properties: {
+                    titleSection: { type: "object" },
+                  },
+                },
+              },
               tagName: "div",
               attributes: {
                 "data-section": "template-titleSection",
@@ -957,13 +653,12 @@ const template2 = {
                               type: "element",
                               tagName: "button",
                               attributes: {
-                                id: "edit-btn",
                                 "data-section": "titleSection",
                                 class:
-                                  "bg-primary text-white rounded-[4px] p-[2px]",
+                                  "resume-edit-btn bg-primary text-white rounded-[4px] p-[2px]",
                               },
                               className:
-                                "bg-primary text-white rounded-[4px] p-[2px]",
+                                "resume-edit-btn bg-primary text-white rounded-[4px] p-[2px]",
                               children: [
                                 {
                                   type: "element",
@@ -983,6 +678,16 @@ const template2 = {
                     },
                     {
                       type: "element",
+                      data: {
+                        key: "firstName",
+                        schema: {
+                          type: "object",
+                          required: ["firstName"],
+                          properties: {
+                            firstName: { type: "string" },
+                          },
+                        },
+                      },
                       tagName: "h1",
                       attributes: {
                         class: "text-4xl leading-none text-primary",
@@ -991,12 +696,22 @@ const template2 = {
                       children: [
                         {
                           type: "text",
-                          content: "{titleSection.firstName}",
+                          content: "{firstName}",
                         },
                       ],
                     },
                     {
                       type: "element",
+                      data: {
+                        key: "lastName",
+                        schema: {
+                          type: "object",
+                          required: ["lastName"],
+                          properties: {
+                            lastName: { type: "string" },
+                          },
+                        },
+                      },
                       tagName: "h1",
                       attributes: {
                         class: "text-4xl leading-none font-bold text-primary",
@@ -1005,12 +720,22 @@ const template2 = {
                       children: [
                         {
                           type: "text",
-                          content: "{titleSection.lastName}",
+                          content: "{lastName}",
                         },
                       ],
                     },
                     {
                       type: "element",
+                      data: {
+                        key: "role",
+                        schema: {
+                          type: "object",
+                          required: ["role"],
+                          properties: {
+                            role: { type: "string" },
+                          },
+                        },
+                      },
                       tagName: "p",
                       attributes: {
                         class: "text-base text-primary",
@@ -1019,7 +744,7 @@ const template2 = {
                       children: [
                         {
                           type: "text",
-                          content: "{titleSection.role}",
+                          content: "{role}",
                         },
                       ],
                     },
@@ -1029,12 +754,64 @@ const template2 = {
             },
             {
               type: "element",
+              data: {
+                key: "personalProfile",
+                schema: {
+                  type: "object",
+                  required: ["personalProfile"],
+                  properties: {
+                    personalProfile: { type: "object" },
+                  },
+                },
+              },
               tagName: "div",
               attributes: {
-                class: "template-profile-section mt-8",
+                class: "template-profile-section mt-8 relative",
               },
-              className: "template-profile-section mt-8",
+              className: "template-profile-section mt-8 relative",
               children: [
+                {
+                  type: "element",
+                  tagName: "div",
+                  attributes: {
+                    id: "IGNORE_THIS_IN_PDF",
+                  },
+                  children: [
+                    {
+                      type: "element",
+                      tagName: "div",
+                      attributes: {
+                        class: "absolute right-0 top-0 mr-3",
+                      },
+                      className: "absolute right-0 top-0 mr-3",
+                      children: [
+                        {
+                          type: "element",
+                          tagName: "button",
+                          attributes: {
+                            "data-section": "personalProfile",
+                            class:
+                              "resume-edit-btn bg-primary text-white rounded-[4px] p-[2px]",
+                          },
+                          className:
+                            "resume-edit-btn bg-primary text-white rounded-[4px] p-[2px]",
+                          children: [
+                            {
+                              type: "element",
+                              tagName: "img",
+                              attributes: {
+                                src: "/src/assets/icons/pencil.svg",
+                                alt: "",
+                              },
+                              src: "http://localhost:5173/src/assets/icons/pencil.svg",
+                              children: [],
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                },
                 {
                   type: "element",
                   tagName: "div",
@@ -1061,6 +838,16 @@ const template2 = {
                     },
                     {
                       type: "element",
+                      data: {
+                        key: "objective",
+                        schema: {
+                          type: "object",
+                          required: ["objective"],
+                          properties: {
+                            objective: { type: "string" },
+                          },
+                        },
+                      },
                       tagName: "p",
                       attributes: {
                         class: "text-[11px] leading-4 text-[#6B7280]",
@@ -1069,8 +856,7 @@ const template2 = {
                       children: [
                         {
                           type: "text",
-                          content:
-                            "A Python developer with 5.8 years of experience in Django, Flask for Retail eCommerce, POS and Storage domain.",
+                          content: "{personalProfile.objective}",
                         },
                       ],
                     },
@@ -1080,6 +866,19 @@ const template2 = {
             },
             {
               type: "element",
+              data: {
+                key: "workExperience",
+                schema: {
+                  type: "object",
+                  required: ["workExperience"],
+                  properties: {
+                    workExperience: {
+                      type: "array",
+                      items: { type: "object" },
+                    },
+                  },
+                },
+              },
               tagName: "div",
               attributes: {
                 class: "template-workexperience-section mt-8",
@@ -1112,7 +911,6 @@ const template2 = {
                     },
                     {
                       type: "block",
-                      blockName: "workExperience",
                       tagName: "div",
                       attributes: {
                         class: "template-workexperience-section--one mt-4",
@@ -1121,7 +919,16 @@ const template2 = {
                       children: [
                         {
                           type: "element",
-                          dataCheck: "title",
+                          data: {
+                            key: "title",
+                            schema: {
+                              type: "object",
+                              required: ["title"],
+                              properties: {
+                                title: { type: "string" },
+                              },
+                            },
+                          },
                           tagName: "h1",
                           attributes: {
                             class:
@@ -1138,7 +945,23 @@ const template2 = {
                         },
                         {
                           type: "element",
-                          dataCheck: ["OR", "role", "startDate", "endDate"],
+                          data: {
+                            schema: {
+                              type: "object",
+                              properties: {
+                                role: { type: "string" },
+                                startDate: {
+                                  type: "string",
+                                },
+                                endDate: { type: "string" },
+                              },
+                              anyOf: [
+                                { required: ["role"] },
+                                { required: ["startDate"] },
+                                { required: ["endDate"] },
+                              ],
+                            },
+                          },
                           tagName: "p",
                           attributes: {
                             class: "text-[11px] leading-4 text-[#6B7280] mt-2",
@@ -1154,7 +977,16 @@ const template2 = {
                         },
                         {
                           type: "element",
-                          dataCheck: "pointOne",
+                          data: {
+                            key: "pointOne",
+                            schema: {
+                              type: "object",
+                              required: ["pointOne"],
+                              properties: {
+                                pointOne: { type: "string" },
+                              },
+                            },
+                          },
                           tagName: "div",
                           attributes: {
                             class: "flex flex-row items-baseline mt-2",
@@ -1188,7 +1020,16 @@ const template2 = {
                         },
                         {
                           type: "element",
-                          dataCheck: "pointTwo",
+                          data: {
+                            key: "pointTwo",
+                            schema: {
+                              type: "object",
+                              required: ["pointTwo"],
+                              properties: {
+                                pointTwo: { type: "string" },
+                              },
+                            },
+                          },
                           tagName: "div",
                           attributes: {
                             class: "flex flex-row items-baseline mt-2",

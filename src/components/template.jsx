@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import { useEffect } from "react";
 import { createHTMLFromJSON } from "src/utils/template-parser";
+import { arrayFrom, isNodeList } from "src/utils/utils";
 
 function createMarkup(template) {
   return {
@@ -18,12 +19,26 @@ const Template = ({ json, data, onSelectedSection }) => {
     onSelectedSection(target.dataset.section);
   };
   useEffect(() => {
-    let editBtns = document.getElementById("edit-btn");
-    if (editBtns) {
-      editBtns.addEventListener("click", handleSectionSelected);
+    let editBtns = document.querySelectorAll(".resume-edit-btn");
+    const listeners = [];
+    if (editBtns && isNodeList(editBtns)) {
+      let nodes = arrayFrom(editBtns);
+      nodes.forEach(function (node) {
+        node.addEventListener("click", handleSectionSelected);
+        listeners.push({
+          node: node,
+          eventType: "click",
+          handler: handleSectionSelected,
+        });
+      });
+      console.log("✅ Event listener added");
     }
+
     return () => {
-      editBtns.removeEventListener("click", handleSectionSelected);
+      listeners.forEach((listener) => {
+        const { node, eventType, handler } = listener;
+        node.removeEventListener(eventType, handler);
+      });
       console.log("✅ Event listener removed");
     };
   }, []);
