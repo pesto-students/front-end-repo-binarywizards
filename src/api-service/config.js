@@ -1,11 +1,15 @@
-const prefix = "auth";
+const prefix = "api";
+
+function routeMap(path) {
+  return `${prefix}${path}`;
+}
 
 const api = {
   auth: {
-    login: `auth/login`,
+    login: routeMap("/auth/login"),
   },
   user: {
-    profile: `${prefix}/user`,
+    profile: routeMap("/user"),
   },
 };
 

@@ -1,3 +1,5 @@
+import { isArray, normalizeToArray } from "./utils";
+
 const ignoreTags = ["input", "form", "select", "textarea", "script"];
 function createJSONFromHTML(node) {
   let obj = {};
@@ -61,8 +63,24 @@ function createJSONFromHTML(node) {
 function createHTMLFromJSON(json, data) {
   let element;
 
+  // Handle blocks
+  if (json.type === "block") {
+    const blockName = json["blockName"];
+    const blocks = data[blockName];
+    if (blocks && blocks.length) {
+      const blockJson = { ...json, type: "element" };
+      const blockElements = blocks.map((block) => {
+        return createHTMLFromJSON(blockJson, block);
+      });
+      return blockElements;
+    }
+  }
+
   // Handle element nodes
   if (json.type === "element") {
+    if (json.dataCheck && !checkDataAvailableOrNot(json.dataCheck, data)) {
+      return false;
+    }
     element = document.createElement(json.tagName);
 
     // Set attributes
@@ -87,7 +105,13 @@ function createHTMLFromJSON(json, data) {
       json.children.forEach((childJson) => {
         let childElement = createHTMLFromJSON(childJson, data);
         if (childElement) {
-          element.appendChild(childElement);
+          if (isArray(childElement)) {
+            childElement.forEach((child) => {
+              element.appendChild(child);
+            });
+          } else {
+            element.appendChild(childElement);
+          }
         }
       });
     }
@@ -99,6 +123,36 @@ function createHTMLFromJSON(json, data) {
   }
 
   return element;
+}
+
+const checkDataAvailableOrNot = (prop, data) => {
+  let props = normalizeToArray(prop);
+  const [check, ...rest] = props;
+  let typeOfCheck = check === "OR" ? "OR" : "AND";
+  props = typeOfCheck === "OR" ? rest : props;
+  let booleans = props.map((prop) => {
+    if (data[prop]) {
+      return true;
+    } else {
+      return false;
+    }
+  });
+  let hasData = checkBooleans(booleans, typeOfCheck);
+
+  return hasData;
+};
+
+function checkBooleans(booleans, typeOfCheck) {
+  if (typeOfCheck === "OR") {
+    // Return true if at least one element is true
+    return booleans.reduce((acc, val) => acc || val, false);
+  } else if (typeOfCheck === "AND") {
+    // Return true only if all elements are true
+    return booleans.reduce((acc, val) => acc && val, true);
+  } else {
+    // Handle unexpected typeOfCheck values
+    throw new Error("Invalid typeOfCheck value. Must be 'OR' or 'AND'.");
+  }
 }
 
 const placeholderRegex = /{([\w.-]+)}/g;
