@@ -1,61 +1,160 @@
 import PropTypes from "prop-types";
 import { useRef } from "react";
 import { debounce } from "src/utils/utils";
+import TextArea from "./form/text-area";
+import InputField from "./form/input-field";
 const TemplateForm = ({ dataSchema, data, onChange, section }) => {
   const formRef = useRef();
 
   const onFormChange = () => {
     debounceUpdateFormData();
   };
+
+  function mergeItemsByOrder(arr) {
+    return Object.values(
+      arr.reduce((acc, item) => {
+        const order = item.order;
+
+        // If the order doesn't exist in the accumulator, initialize an empty object
+        acc[order] = acc[order] || {};
+
+        // Merge the current item into the object for this order
+        Object.assign(acc[order], item);
+
+        return acc;
+      }, {}),
+    );
+  }
   const updateFormData = () => {
     const formData = formRef.current;
-    const newData = {};
-    for (const key in data) {
-      if (Object.hasOwnProperty.call(data, key)) {
-        let value = formData[key].value;
-        value = value ? value.replace(/[{}]/g, "") : "";
-        newData[key] = value;
-      }
-    }
-    console.log("newData: ", newData);
+
     const finalData = {};
-    finalData[section] = { ...data, ...newData };
+    if (dataSchema.fieldType.repeatable && dataSchema.fieldType.isBlock) {
+      const newFormData = new FormData(formRef.current);
+      let tempData = [];
+      for (let [key, value] of newFormData.entries()) {
+        let order = formData[key].dataset.order;
+        let actualKey = formData[key].dataset.key;
+        value = value ? value.replace(/[{}]/g, "") : "";
+        tempData.push({ [actualKey]: value, order: parseInt(order) });
+      }
+      let newData = mergeItemsByOrder(tempData);
+      finalData[section] = newData;
+    }
+    if (dataSchema.fieldType.repeatable && !dataSchema.fieldType.isBlock) {
+      const newFormData = new FormData(formRef.current);
+      let newData = [];
+      for (let [key, value] of newFormData.entries()) {
+        let order = formData[key].dataset.order;
+        let actualKey = formData[key].dataset.key;
+        value = value ? value.replace(/[{}]/g, "") : "";
+        newData.push({ [actualKey]: value, order: parseInt(order) });
+      }
+      finalData[section] = newData;
+    }
+    if (!dataSchema.fieldType.repeatable) {
+      let newData = {};
+      for (const key in data) {
+        if (Object.hasOwnProperty.call(data, key)) {
+          let value = formData[key].value;
+          value = value ? value.replace(/[{}]/g, "") : "";
+          newData[key] = value;
+        }
+      }
+
+      finalData[section] = { ...data, ...newData };
+    }
+
+    // console.log("newData: ", finalData[section]);
     onChange(finalData);
   };
-  const debounceUpdateFormData = debounce(updateFormData, 400);
-  return (
-    <div>
-      <form onChange={onFormChange} ref={formRef}>
-        {dataSchema.map((field) => {
-          if (field.type === "input") {
-            return (
-              <div key={field.label} className="mb-6">
-                <label
-                  htmlFor="default-input"
-                  className="block mb-2 text-sm font-semibold text-gray-900 dark:text-white"
-                >
-                  {field.label}
-                </label>
-                <input
-                  type="text"
-                  id={field.key}
-                  name={field.key}
-                  defaultValue={field.value}
-                  placeholder={field.placeholder}
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+
+  const generateForm = (dataSchema, data) => {
+    if (dataSchema.fieldType.repeatable) {
+      let formFields = [];
+      data.forEach((item) => {
+        dataSchema.schema.forEach((fieldData) => {
+          let field = null;
+          if (fieldData.type === "input") {
+            field = (
+              <div key={`${fieldData.label}-${item["order"]}`} className="mb-6">
+                <InputField
+                  field={fieldData}
+                  data={item}
+                  order={item["order"]}
                 />
               </div>
             );
           }
-        })}
+          if (fieldData.type === "textarea") {
+            field = (
+              <div key={`${fieldData.label}-${item["order"]}`} className="mb-6">
+                <TextArea field={fieldData} data={item} order={item["order"]} />
+              </div>
+            );
+          }
+          formFields.push(field);
+        });
+        if (dataSchema.fieldType.isBlock) {
+          let action = (
+            <div key={`Delete-block-${item.order}`} className="mt-4 mb-20">
+              <button className="rounded py-1.5 text-sm text-red-500 uppercase font-semibold border border-red-500 border-dashed w-full">
+                Delete Block
+              </button>
+            </div>
+          );
+          formFields.push(action);
+        }
+      });
+      if (dataSchema.fieldType.isBlock) {
+        let action = (
+          <div key={`Add-block`} className="mt-4 mb-20">
+            <button className="rounded py-1.5 text-sm text-primary uppercase font-semibold border border-accent-900 border-dashed w-full">
+              Add Block
+            </button>
+          </div>
+        );
+        formFields.push(action);
+      }
+      return formFields;
+    } else {
+      return dataSchema.schema.map((fieldData) => {
+        if (fieldData.type === "input") {
+          return (
+            <div key={fieldData.label} className="mb-6">
+              <InputField field={fieldData} data={data} />
+            </div>
+          );
+        }
+        if (fieldData.type === "textarea") {
+          return (
+            <div key={fieldData.label} className="mb-6">
+              <TextArea field={fieldData} data={data} />
+            </div>
+          );
+        }
+      });
+    }
+  };
+  const debounceUpdateFormData = debounce(updateFormData, 400);
+  return (
+    <div className="max-h-[840px] p-8 overflow-auto">
+      <form onChange={onFormChange} ref={formRef}>
+        {generateForm(dataSchema, data)}
       </form>
     </div>
   );
 };
 TemplateForm.propTypes = {
   section: PropTypes.string,
-  dataSchema: PropTypes.array,
-  data: PropTypes.object,
+  dataSchema: PropTypes.shape({
+    fieldType: PropTypes.shape({
+      repeatable: PropTypes.bool,
+      isBlock: PropTypes.bool,
+    }),
+    schema: PropTypes.arrayOf(PropTypes.object),
+  }),
+  data: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   onChange: PropTypes.func,
 };
 

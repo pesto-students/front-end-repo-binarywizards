@@ -15,13 +15,14 @@ const metaData = {
   },
 
   skills: [
-    { skill: "Python" },
-    { skill: "Tensorflow" },
-    { skill: "Keras" },
-    { skill: "Django" },
+    { skill: "Python", order: 1 },
+    { skill: "Tensorflow", order: 2 },
+    { skill: "Keras", order: 3 },
+    { skill: "Django", order: 4 },
   ],
   workExperience: [
     {
+      order: 1,
       title: "QuantumAI Labs",
       role: "ML Engineer",
       startDate: "Apr 2019",
@@ -32,6 +33,7 @@ const metaData = {
         "Build basic ETL that ingested transactional and event data from a web app with 10,000 daily active users that saved over $85,000 annually in external vendor costs",
     },
     {
+      order: 2,
       title: "INTELLECTA AI",
       role: "ML Engineer",
       startDate: "Apr 2018",
@@ -41,49 +43,185 @@ const metaData = {
     },
   ],
   achievements: [
-    "Most Outstanding Employee of the Year, Pixelpoint Hive (2015)",
-    "Best Mobile App Design, HGFZ Graduate Center (2014)",
-    "Design Award, Cliffmoor College (2012)",
+    {
+      achievement:
+        "Most Outstanding Employee of the Year, Pixelpoint Hive (2015)",
+      order: 1,
+    },
+    {
+      achievement: "Best Mobile App Design, HGFZ Graduate Center (2014)",
+      order: 2,
+    },
+    {
+      achievement: "Design Award, Cliffmoor College (2012)",
+      order: 3,
+    },
   ],
 };
 
 const dataSchema = {
-  titleSection: [
-    {
-      type: "input",
-      key: "firstName",
-      label: "First Name",
-      value: "",
-      placeholder: "e.g John",
+  titleSection: {
+    fieldType: {
+      repeatable: false,
     },
-    {
-      type: "input",
-      key: "lastName",
-      label: "Last Name",
-      value: "",
-      placeholder: "e.g Doe",
+    schema: [
+      {
+        type: "input",
+        key: "firstName",
+        label: "First Name",
+        value: "",
+        placeholder: "e.g John",
+      },
+      {
+        type: "input",
+        key: "lastName",
+        label: "Last Name",
+        value: "",
+        placeholder: "e.g Doe",
+      },
+      {
+        type: "input",
+        key: "role",
+        label: "Role",
+        value: "",
+        placeholder: "e.g ML Engineer",
+      },
+    ],
+  },
+
+  personalProfile: {
+    fieldType: {
+      repeatable: false,
     },
-    {
-      type: "input",
-      key: "role",
-      label: "Role",
-      value: "",
-      placeholder: "e.g ML Engineer",
+    schema: [
+      {
+        type: "textarea",
+        rows: 4,
+        key: "objective",
+        label: "Personal Profile",
+        value: "",
+        placeholder:
+          "e.g A Python developer with 5.8 years of experience in Django, Flask for Retail eCommerce, POS and Storage domain.",
+      },
+    ],
+  },
+  contactInfo: {
+    fieldType: {
+      repeatable: false,
     },
-  ],
-  personalProfile: [
-    {
-      type: "input",
-      key: "objective",
-      label: "Objective",
-      value: "",
-      placeholder:
-        "e.g A Python developer with 5.8 years of experience in Django, Flask for Retail eCommerce, POS and Storage domain.",
+    schema: [
+      {
+        type: "textarea",
+        rows: 2,
+        key: "address",
+        label: "Address",
+        value: "",
+        placeholder: "e.g 3205 Eden Drive, Glen All Virginia - 23060",
+      },
+      {
+        type: "input",
+        key: "email",
+        label: "Email",
+        value: "",
+        placeholder: "e.g john@gmail.com",
+      },
+      {
+        type: "input",
+        key: "phone",
+        label: "Phone",
+        value: "",
+        placeholder: "e.g 9123456789",
+      },
+    ],
+  },
+  skills: {
+    fieldType: {
+      repeatable: true,
+      isBlock: false,
+      max: 4,
     },
-  ],
+    schema: [
+      {
+        type: "input",
+        key: "skill",
+        label: "Skill",
+        value: "",
+        placeholder: "e.g Javascript",
+      },
+    ],
+  },
+  achievements: {
+    fieldType: {
+      repeatable: true,
+      isBlock: false,
+      max: 3,
+    },
+    schema: [
+      {
+        type: "input",
+        key: "achievement",
+        label: "Achievement",
+        value: "",
+        placeholder: "e.g Javascript",
+      },
+    ],
+  },
+  workExperience: {
+    fieldType: {
+      repeatable: true,
+      isBlock: true,
+      max: 4,
+    },
+    schema: [
+      {
+        type: "input",
+        key: "title",
+        label: "Title",
+        value: "",
+        placeholder: "e.g QuantumAI Labs",
+      },
+      {
+        type: "input",
+        key: "role",
+        label: "Role / Responsibility",
+        value: "",
+        placeholder: "e.g ML Engineer",
+      },
+      {
+        type: "input",
+        key: "startDate",
+        label: "Start Date",
+        value: "",
+        placeholder: "e.g Apr 2019",
+      },
+      {
+        type: "input",
+        key: "endDate",
+        label: "End Date",
+        value: "",
+        placeholder: "e.g Apr 2020",
+      },
+      {
+        type: "textarea",
+        rows: 3,
+        key: "pointOne",
+        label: "Point 1",
+        value: "",
+        placeholder: "e.g Build basic ETL that ingested transactional",
+      },
+      {
+        type: "textarea",
+        rows: 3,
+        key: "pointTwo",
+        label: "Point 2",
+        value: "",
+        placeholder: "e.g Build basic ETL that ingested transactional",
+      },
+    ],
+  },
 };
 
-const template2 = {
+const template = {
   type: "element",
   tagName: "div",
   attributes: {
@@ -96,17 +234,17 @@ const template2 = {
       type: "element",
       tagName: "div",
       attributes: {
-        class: "h-full flex flex-row",
+        class: "h-auto min-h-full flex flex-row",
       },
-      className: "h-full flex flex-row",
+      className: "h-auto min-h-full flex flex-row",
       children: [
         {
           type: "element",
           tagName: "div",
           attributes: {
-            class: "template-leftside-section w-2/5 h-full bg-primary",
+            class: "template-leftside-section w-2/5 bg-primary",
           },
-          className: "template-leftside-section w-2/5 h-full bg-primary",
+          className: "template-leftside-section w-2/5 bg-primary",
           children: [
             {
               type: "element",
@@ -162,10 +300,52 @@ const template2 = {
               },
               tagName: "div",
               attributes: {
-                class: "template-contact-section mx-4 mt-6",
+                class: "template-contact-section mx-4 mt-6 relative",
               },
-              className: "template-contact-section mx-4 mt-6",
+              className: "template-contact-section mx-4 mt-6 relative",
               children: [
+                {
+                  type: "element",
+                  tagName: "div",
+                  attributes: {
+                    id: "IGNORE_THIS_IN_PDF",
+                  },
+                  children: [
+                    {
+                      type: "element",
+                      tagName: "div",
+                      attributes: {
+                        class: "absolute right-0 top-0",
+                      },
+                      className: "absolute right-0 top-0",
+                      children: [
+                        {
+                          type: "element",
+                          tagName: "button",
+                          attributes: {
+                            "data-section": "contactInfo",
+                            class:
+                              "resume-edit-btn w-5 h-5 outline outline-1 outline-white bg-primary text-white rounded-[4px] p-[2px]",
+                          },
+                          className:
+                            "resume-edit-btn w-5 h-5 outline outline-1 outline-white bg-primary text-white rounded-[4px] p-[2px]",
+                          children: [
+                            {
+                              type: "element",
+                              tagName: "img",
+                              attributes: {
+                                src: "/src/assets/icons/pencil.svg",
+                                alt: "",
+                              },
+                              src: "http://localhost:5173/src/assets/icons/pencil.svg",
+                              children: [],
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                },
                 {
                   type: "element",
                   tagName: "h1",
@@ -414,10 +594,52 @@ const template2 = {
               },
               tagName: "div",
               attributes: {
-                class: "template-skill-section mx-4 mt-6",
+                class: "template-skill-section mx-4 mt-6 relative",
               },
-              className: "template-skill-section mx-4 mt-6",
+              className: "template-skill-section mx-4 mt-6 relative",
               children: [
+                {
+                  type: "element",
+                  tagName: "div",
+                  attributes: {
+                    id: "IGNORE_THIS_IN_PDF",
+                  },
+                  children: [
+                    {
+                      type: "element",
+                      tagName: "div",
+                      attributes: {
+                        class: "absolute right-0 top-0",
+                      },
+                      className: "absolute right-0 top-0",
+                      children: [
+                        {
+                          type: "element",
+                          tagName: "button",
+                          attributes: {
+                            "data-section": "skills",
+                            class:
+                              "resume-edit-btn w-5 h-5 outline outline-1 outline-white bg-primary text-white rounded-[4px] p-[2px]",
+                          },
+                          className:
+                            "resume-edit-btn w-5 h-5 outline outline-1 outline-white bg-primary text-white rounded-[4px] p-[2px]",
+                          children: [
+                            {
+                              type: "element",
+                              tagName: "img",
+                              attributes: {
+                                src: "/src/assets/icons/pencil.svg",
+                                alt: "",
+                              },
+                              src: "http://localhost:5173/src/assets/icons/pencil.svg",
+                              children: [],
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                },
                 {
                   type: "element",
                   tagName: "h1",
@@ -442,7 +664,7 @@ const template2 = {
                       type: "object",
                       required: ["skill"],
                       properties: {
-                        skill: { type: "string" },
+                        skill: { type: "string", minLength: 1 },
                       },
                     },
                   },
@@ -502,17 +724,61 @@ const template2 = {
                     achievements: {
                       type: "array",
                       minItems: 1,
-                      items: { type: "string" },
+                      items: {
+                        type: "object",
+                      },
                     },
                   },
                 },
               },
               tagName: "div",
               attributes: {
-                class: "template-contact-section mx-4 mt-6",
+                class: "template-achievement-section mx-4 mt-6 relative",
               },
-              className: "template-contact-section mx-4 mt-6",
+              className: "template-achievement-section mx-4 mt-6 relative",
               children: [
+                {
+                  type: "element",
+                  tagName: "div",
+                  attributes: {
+                    id: "IGNORE_THIS_IN_PDF",
+                  },
+                  children: [
+                    {
+                      type: "element",
+                      tagName: "div",
+                      attributes: {
+                        class: "absolute right-0 top-0",
+                      },
+                      className: "absolute right-0 top-0",
+                      children: [
+                        {
+                          type: "element",
+                          tagName: "button",
+                          attributes: {
+                            "data-section": "achievements",
+                            class:
+                              "resume-edit-btn w-5 h-5 outline outline-1 outline-white bg-primary text-white rounded-[4px] p-[2px]",
+                          },
+                          className:
+                            "resume-edit-btn w-5 h-5 outline outline-1 outline-white bg-primary text-white rounded-[4px] p-[2px]",
+                          children: [
+                            {
+                              type: "element",
+                              tagName: "img",
+                              attributes: {
+                                src: "/src/assets/icons/pencil.svg",
+                                alt: "",
+                              },
+                              src: "http://localhost:5173/src/assets/icons/pencil.svg",
+                              children: [],
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                },
                 {
                   type: "element",
                   tagName: "h1",
@@ -532,9 +798,13 @@ const template2 = {
                 {
                   type: "block",
                   data: {
+                    key: "achievement",
                     schema: {
-                      type: "string",
-                      minLength: 1,
+                      type: "object",
+                      required: ["achievement"],
+                      properties: {
+                        achievement: { type: "string", minLength: 1 },
+                      },
                     },
                   },
                   tagName: "div",
@@ -589,7 +859,7 @@ const template2 = {
                       children: [
                         {
                           type: "text",
-                          content: "{index}",
+                          content: "{achievement}",
                         },
                       ],
                     },
@@ -655,10 +925,10 @@ const template2 = {
                               attributes: {
                                 "data-section": "titleSection",
                                 class:
-                                  "resume-edit-btn bg-primary text-white rounded-[4px] p-[2px]",
+                                  "resume-edit-btn w-5 h-5 outline outline-1 outline-white bg-primary text-white rounded-[4px] p-[2px]",
                               },
                               className:
-                                "resume-edit-btn bg-primary text-white rounded-[4px] p-[2px]",
+                                "resume-edit-btn w-5 h-5 outline outline-1 outline-white bg-primary text-white rounded-[4px] p-[2px]",
                               children: [
                                 {
                                   type: "element",
@@ -791,10 +1061,10 @@ const template2 = {
                           attributes: {
                             "data-section": "personalProfile",
                             class:
-                              "resume-edit-btn bg-primary text-white rounded-[4px] p-[2px]",
+                              "resume-edit-btn w-5 h-5 outline outline-1 outline-white bg-primary text-white rounded-[4px] p-[2px]",
                           },
                           className:
-                            "resume-edit-btn bg-primary text-white rounded-[4px] p-[2px]",
+                            "resume-edit-btn w-5 h-5 outline outline-1 outline-white bg-primary text-white rounded-[4px] p-[2px]",
                           children: [
                             {
                               type: "element",
@@ -881,10 +1151,52 @@ const template2 = {
               },
               tagName: "div",
               attributes: {
-                class: "template-workexperience-section mt-8",
+                class: "template-workexperience-section mt-8 relative",
               },
-              className: "template-workexperience-section mt-8",
+              className: "template-workexperience-section mt-8 relative",
               children: [
+                {
+                  type: "element",
+                  tagName: "div",
+                  attributes: {
+                    id: "IGNORE_THIS_IN_PDF",
+                  },
+                  children: [
+                    {
+                      type: "element",
+                      tagName: "div",
+                      attributes: {
+                        class: "absolute right-0 top-0 mr-3",
+                      },
+                      className: "absolute right-0 top-0 mr-3",
+                      children: [
+                        {
+                          type: "element",
+                          tagName: "button",
+                          attributes: {
+                            "data-section": "workExperience",
+                            class:
+                              "resume-edit-btn w-5 h-5 outline outline-1 outline-white bg-primary text-white rounded-[4px] p-[2px]",
+                          },
+                          className:
+                            "resume-edit-btn w-5 h-5 outline outline-1 outline-white bg-primary text-white rounded-[4px] p-[2px]",
+                          children: [
+                            {
+                              type: "element",
+                              tagName: "img",
+                              attributes: {
+                                src: "/src/assets/icons/pencil.svg",
+                                alt: "",
+                              },
+                              src: "http://localhost:5173/src/assets/icons/pencil.svg",
+                              children: [],
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                },
                 {
                   type: "element",
                   tagName: "div",
@@ -983,7 +1295,7 @@ const template2 = {
                               type: "object",
                               required: ["pointOne"],
                               properties: {
-                                pointOne: { type: "string" },
+                                pointOne: { type: "string", minLength: 1 },
                               },
                             },
                           },
@@ -1026,7 +1338,7 @@ const template2 = {
                               type: "object",
                               required: ["pointTwo"],
                               properties: {
-                                pointTwo: { type: "string" },
+                                pointTwo: { type: "string", minLength: 1 },
                               },
                             },
                           },
@@ -1074,4 +1386,4 @@ const template2 = {
   ],
 };
 
-export { template2, dataSchema, metaData };
+export { template, dataSchema, metaData };

@@ -10,12 +10,10 @@ function createMarkup(template) {
 }
 
 const Template = ({ json, data, onSelectedSection }) => {
-  console.log("props: ", data);
+  // console.log("props: ", data);
   let myTemplate = createHTMLFromJSON(json, data);
   const handleSectionSelected = (event) => {
-    console.log(event.currentTarget);
     const target = event.currentTarget;
-    console.log("section: ", target.dataset.section);
     onSelectedSection(target.dataset.section);
   };
   useEffect(() => {
@@ -41,10 +39,10 @@ const Template = ({ json, data, onSelectedSection }) => {
       });
       console.log("✅ Event listener removed");
     };
-  }, []);
+  }, [data]);
   return (
     <div
-      className="w-full h-full"
+      className="w-full h-full min-h-[842px] max-h-[890px] overflow-auto"
       dangerouslySetInnerHTML={createMarkup(myTemplate)}
     ></div>
   );
