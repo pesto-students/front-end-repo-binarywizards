@@ -1,13 +1,21 @@
 import PropTypes from "prop-types";
 import { useRef } from "react";
-import { debounce } from "src/utils/utils";
+import { debounce, isArray } from "src/utils/utils";
 import TextArea from "./form/text-area";
 import InputField from "./form/input-field";
-const TemplateForm = ({ dataSchema, data, onChange, section }) => {
+const TemplateForm = ({ dataSchema, data, onChange, onDelete, section }) => {
   const formRef = useRef();
 
   const onFormChange = () => {
     debounceUpdateFormData();
+  };
+
+  const deleteBlock = (blockId) => {
+    if (isArray(data)) {
+      let newData = data.filter((item) => item.order !== blockId);
+      let finalData = { [section]: newData };
+      onDelete(finalData);
+    }
   };
 
   function mergeItemsByOrder(arr) {
@@ -70,7 +78,7 @@ const TemplateForm = ({ dataSchema, data, onChange, section }) => {
   };
 
   const generateForm = (dataSchema, data) => {
-    if (dataSchema.fieldType.repeatable) {
+    if (dataSchema.fieldType.repeatable && isArray(data)) {
       let formFields = [];
       data.forEach((item) => {
         dataSchema.schema.forEach((fieldData) => {
@@ -98,7 +106,11 @@ const TemplateForm = ({ dataSchema, data, onChange, section }) => {
         if (dataSchema.fieldType.isBlock) {
           let action = (
             <div key={`Delete-block-${item.order}`} className="mt-4 mb-20">
-              <button className="rounded py-1.5 text-sm text-red-500 uppercase font-semibold border border-red-500 border-dashed w-full">
+              <button
+                type="button"
+                onClick={() => deleteBlock(item.order)}
+                className="rounded py-1.5 text-sm text-red-500 uppercase font-semibold border border-red-500 border-dashed w-full"
+              >
                 Delete Block
               </button>
             </div>
@@ -108,7 +120,7 @@ const TemplateForm = ({ dataSchema, data, onChange, section }) => {
       });
       if (dataSchema.fieldType.isBlock) {
         let action = (
-          <div key={`Add-block`} className="mt-4 mb-20">
+          <div key={`Add-block`} className="mt-4 mb-2">
             <button className="rounded py-1.5 text-sm text-primary uppercase font-semibold border border-accent-900 border-dashed w-full">
               Add Block
             </button>
@@ -117,7 +129,8 @@ const TemplateForm = ({ dataSchema, data, onChange, section }) => {
         formFields.push(action);
       }
       return formFields;
-    } else {
+    }
+    if (!(dataSchema.fieldType.repeatable || isArray(data))) {
       return dataSchema.schema.map((fieldData) => {
         if (fieldData.type === "input") {
           return (
@@ -135,10 +148,13 @@ const TemplateForm = ({ dataSchema, data, onChange, section }) => {
         }
       });
     }
+
+    return "loading...";
   };
   const debounceUpdateFormData = debounce(updateFormData, 400);
+
   return (
-    <div className="max-h-[840px] p-8 overflow-auto">
+    <div className="max-h-[840px] p-8 overflow-auto mb-10">
       <form onChange={onFormChange} ref={formRef}>
         {generateForm(dataSchema, data)}
       </form>
@@ -156,6 +172,7 @@ TemplateForm.propTypes = {
   }),
   data: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   onChange: PropTypes.func,
+  onDelete: PropTypes.func,
 };
 
 export default TemplateForm;
