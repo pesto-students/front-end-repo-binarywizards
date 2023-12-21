@@ -38,7 +38,7 @@ const LoginPage = () => {
     let isValid = formValidator(formData, validations);
     if (!isValid) return;
     const { email, password } = formData;
-    const credentials = { username: email.value, password: password.value };
+    const credentials = { email: email.value, password: password.value };
     const success = await authorize(credentials);
     if (success) {
       navigate("/app");
