@@ -17,10 +17,19 @@ const user = async (params) => {
 
   return response.data;
 };
+const template = async (params) => {
+  const response = await axiosService.get(api.templates.get, params);
+  if (!response.status) {
+    throw new Error(response.msg);
+  }
+
+  return response.data;
+};
 
 const apiService = {
   login,
   user,
+  template,
 };
 
 export { apiService };

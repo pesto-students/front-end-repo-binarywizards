@@ -15,3 +15,24 @@ body {
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+/* Scrollbar Container */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Scrollbar Track */
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Scrollbar Handle */
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #b1a8ff;
+  border-radius: 8px;
+}
+
+/* Scrollbar Handle on hover */
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #5850EC;
+}

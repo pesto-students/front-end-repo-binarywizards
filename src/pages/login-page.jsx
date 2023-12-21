@@ -1,7 +1,8 @@
 import Tippy from "@tippyjs/react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import useAuth from "src/hooks/useAuth";
+import { formValidator } from "src/utils/form-validator";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -9,6 +10,7 @@ const LoginPage = () => {
   const redirect = searchParams.get("redirect");
   const { authorize } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
+  const formRef = useRef();
 
   const togglePasswordVisibility = (flag) => {
     setShowPassword(flag);
@@ -20,13 +22,25 @@ const LoginPage = () => {
   };
 
   const handleSubmit = async () => {
-    const credentials = {
-      username: "testinguser2",
-      password: "abc123",
+    const formData = formRef.current;
+    const validations = {
+      email: {
+        type: "email",
+        isRequired: [true, "is-required"],
+      },
+      password: {
+        type: "password",
+        isRequired: [true, "is-required"],
+        min: [6, "min"],
+        max: [14, "max"],
+      },
     };
+    let isValid = formValidator(formData, validations);
+    if (!isValid) return;
+    const { email, password } = formData;
+    const credentials = { username: email.value, password: password.value };
     const success = await authorize(credentials);
     if (success) {
-      console.log("success: ", success);
       navigate("/app");
     } else {
       //show error toast
@@ -50,7 +64,7 @@ const LoginPage = () => {
                 Welcome Back
               </h1>
 
-              <form className="max-w-sm mx-auto">
+              <form className="max-w-sm mx-auto" ref={formRef}>
                 <div className="mb-5">
                   <label
                     htmlFor="email"
@@ -61,10 +75,13 @@ const LoginPage = () => {
                   <input
                     type="email"
                     id="email"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-accent focus:ring-blue-500 focus:border-blue-500 block w-full  p-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    className="peer bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  focus:border-blue-500 block w-full  p-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="Email address"
                     required
                   />
+                  <p className="hidden peer-[.is-required]:peer-required:block mt-2 text-sm text-red-600 dark:text-red-500">
+                    <span className="font-medium">Email</span> is rquired
+                  </p>
                 </div>
                 <div className="mb-5">
                   <label
@@ -74,6 +91,24 @@ const LoginPage = () => {
                     Password
                   </label>
                   <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      id="password"
+                      className="peer bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  focus:border-blue-500 block w-full p-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      placeholder="Password"
+                      required
+                    />
+                    <p className="hidden peer-[.is-required]:peer-required:block mt-2 text-sm text-red-600 dark:text-red-500">
+                      <span className="font-medium">Password</span> is rquired
+                    </p>
+                    <p className="hidden peer-[.min]:peer-required:block mt-2 text-sm text-red-600 dark:text-red-500">
+                      <span className="font-medium">Password</span> should be at
+                      least 6 characters long
+                    </p>
+                    <p className="hidden peer-[.max]:peer-required:block mt-2 text-sm text-red-600 dark:text-red-500">
+                      <span className="font-medium">Password</span> should not
+                      be more than 14 characters
+                    </p>
                     <div className="absolute inset-y-0 end-0 flex items-center pe-3.5">
                       {showPassword ? (
                         <Tippy content="Hide Password">
@@ -128,14 +163,6 @@ const LoginPage = () => {
                         </Tippy>
                       )}
                     </div>
-
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      id="password"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-accent focus:ring-blue-500 focus:border-blue-500 block w-full p-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      placeholder="Password"
-                      required
-                    />
                   </div>
                 </div>
                 <div className="flex items-start mb-5">

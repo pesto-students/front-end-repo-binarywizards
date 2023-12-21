@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 
 const AppNavbar = () => {
   return (
-    <nav className="bg-primary sticky w-full z-20 top-0 start-0">
+    <nav className="bg-primary sticky top-0 w-full z-20  start-0">
       <div className="flex flex-wrap items-center justify-between mx-auto px-10 py-4">
         <a
           to={"/app"}
