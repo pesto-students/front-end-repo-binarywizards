@@ -7,8 +7,25 @@ import GearIcon from "src/assets/icons/gear.svg?react";
 import DownloadIcon from "src/assets/icons/download.svg?react";
 import ShareIcon from "src/assets/icons/share.svg?react";
 import TimesIcon from "src/assets/icons/times.svg?react";
+import { useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { apiService } from "src/api-service/api-service";
 
 const BuildResume = () => {
+  const { id } = useParams();
+  const {
+    isLoading,
+    error,
+    data: resData,
+  } = useQuery({
+    queryKey: ["template"],
+    queryFn: async () => {
+      const res = await apiService.template(id);
+      console.log("res: ", res);
+      return res;
+    },
+  });
+  console.log("id: ", id);
   const {
     defaultData: { dataSchema, metaData, template },
     resume,
@@ -34,6 +51,10 @@ const BuildResume = () => {
   const onSaveResume = () => {
     console.log("resume: ", resume.metaData);
   };
+
+  // if (isLoading) return "Loading...";
+  // if (error) return "An error has occurred: " + error.message;
+  // if (resData) return JSON.stringify(resData);
   return (
     <div className="h-full flex flex-col px-10 py-4">
       <h1>Build Resume</h1>

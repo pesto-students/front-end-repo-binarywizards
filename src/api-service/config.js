@@ -1,4 +1,4 @@
-const prefix = "api";
+const prefix = "api/v1";
 
 function routeMap(path) {
   return `${prefix}${path}`;
@@ -10,6 +10,9 @@ const api = {
   },
   user: {
     profile: routeMap("/user"),
+  },
+  templates: {
+    get: routeMap("/templates"),
   },
 };
 

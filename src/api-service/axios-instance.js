@@ -4,6 +4,7 @@ import {
   setAccessToken,
   setRefreshToken,
 } from "src/utils/auth";
+
 // const api = "https://perfectresume-ai.onrender.com";
 // const dev = "http://localhost:5500";
 const backend = "http://localhost:3000";
@@ -63,6 +64,9 @@ const axiosService = {
   get: async (endpoint, params) => {
     console.log("endpoint: ", endpoint);
     console.log("params: ", params);
+    if (params) {
+      endpoint = `${endpoint}/${params}`;
+    }
     const response = await instance.get(endpoint);
     if (response.status !== 200) {
       return { status: false, msg: response.message };
