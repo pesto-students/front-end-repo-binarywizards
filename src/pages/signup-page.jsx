@@ -1,14 +1,51 @@
 import Tippy from "@tippyjs/react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import Icon from "src/components/icon";
 import googleLogo from "src/assets/google-logo.svg";
+import { formValidator } from "src/utils/form-validator";
+import useAuth from "src/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 const SignupPage = () => {
+  const navigate = useNavigate();
+  const { signUp } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
+  const communityFlag = useRef(null);
+  const formRef = useRef(null);
 
   const togglePasswordVisibility = (flag) => {
     setShowPassword(flag);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = formRef.current;
+    const validations = {
+      email: {
+        type: "email",
+        isRequired: [true, "is-required"],
+      },
+      password: {
+        type: "password",
+        isRequired: [true, "is-required"],
+        min: [6, "min"],
+        max: [14, "max"],
+      },
+    };
+    let isValid = formValidator(formData, validations);
+    if (!isValid) return;
+
+    const userForm = {
+      email: formData.email.value,
+      password: formData.password.value,
+      userType: formData.joinedAsReviewer.checked,
+    };
+
+    await signUp(userForm);
+    navigate("/app");
   };
 
   return (
@@ -27,7 +64,7 @@ const SignupPage = () => {
                 Create your account
               </h1>
 
-              <form className="max-w-sm mx-auto">
+              <form className="max-w-sm mx-auto" ref={formRef}>
                 <div className="mb-5">
                   <label
                     htmlFor="email"
@@ -40,6 +77,7 @@ const SignupPage = () => {
                     id="email"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-accent focus:ring-blue-500 focus:border-blue-500 block w-full  p-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="Email address"
+                    ref={emailRef}
                     required
                   />
                 </div>
@@ -111,6 +149,7 @@ const SignupPage = () => {
                       id="password"
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-accent focus:ring-blue-500 focus:border-blue-500 block w-full p-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       placeholder="Password"
+                      ref={passwordRef}
                       required
                     />
                   </div>
@@ -120,9 +159,8 @@ const SignupPage = () => {
                     <input
                       id="joinedAsReviewer"
                       type="checkbox"
-                      value=""
+                      ref={communityFlag}
                       className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800"
-                      required
                     />
                   </div>
                   <label
@@ -133,7 +171,7 @@ const SignupPage = () => {
                   </label>
                 </div>
                 <button
-                  type="submit"
+                  onClick={handleSubmit}
                   className="text-white bg-accent hover:opacity-95 focus:ring-4 focus:outline-none  focus:ring-accent-300 font-medium rounded-lg text-sm w-full px-5 py-4 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                 >
                   Sign up

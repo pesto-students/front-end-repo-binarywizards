@@ -9,6 +9,16 @@ const login = async (credentials) => {
 
   return response.data;
 };
+
+const signUp = async (userData) => {
+  const response = await axiosService.post(api.auth.signUp, userData);
+  if (!response.status) {
+    throw new Error(response.msg);
+  }
+  console.log(response.data);
+  console.log(response);
+  return response.data;
+};
 const user = async (params) => {
   const response = await axiosService.get(api.user.profile, params);
   if (!response.status) {
@@ -28,6 +38,7 @@ const template = async (params) => {
 
 const apiService = {
   login,
+  signUp,
   user,
   template,
 };
