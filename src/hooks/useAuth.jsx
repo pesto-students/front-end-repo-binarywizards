@@ -46,6 +46,18 @@ const useAuth = () => {
     return false;
   };
 
+  const signUp = async (userData) => {
+    const { accessToken } = await apiService.signUp(userData);
+    console.log(accessToken);
+    if (accessToken) {
+      setAccessToken(accessToken);
+      setRefreshToken("");
+      setIsAuthenticated(true);
+      return true;
+    }
+    return false;
+  };
+
   const logout = () => {
     // Clear the session/token
     setAccessToken("");
@@ -94,6 +106,7 @@ const useAuth = () => {
     logout,
     handleExpiry,
     isTokenValid,
+    signUp,
   };
 };
 
