@@ -154,7 +154,7 @@ const TemplateForm = ({ dataSchema, data, onChange, onDelete, section }) => {
   const debounceUpdateFormData = debounce(updateFormData, 400);
 
   return (
-    <div className="max-h-[840px] p-8 overflow-auto mb-10">
+    <div className="max-h-[840px] p-8 overflow-auto mb-10 custom-scrollbar">
       <form onChange={onFormChange} ref={formRef}>
         {generateForm(dataSchema, data)}
       </form>

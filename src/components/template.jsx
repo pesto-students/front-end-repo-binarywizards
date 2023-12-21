@@ -42,7 +42,7 @@ const Template = ({ json, data, onSelectedSection }) => {
   }, [data]);
   return (
     <div
-      className="w-full h-full min-h-[842px] max-h-[890px] overflow-auto"
+      className="w-full h-full min-h-[842px] max-h-[890px] overflow-auto custom-scrollbar"
       dangerouslySetInnerHTML={createMarkup(myTemplate)}
     ></div>
   );

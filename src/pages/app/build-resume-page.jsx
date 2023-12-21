@@ -30,6 +30,10 @@ const BuildResume = () => {
   const onSelectedSection = (section) => {
     setSection(section);
   };
+
+  const onSaveResume = () => {
+    console.log("resume: ", resume.metaData);
+  };
   return (
     <div className="h-full flex flex-col px-10 py-4">
       <h1>Build Resume</h1>
@@ -101,9 +105,16 @@ const BuildResume = () => {
               <div className="flex items-center">
                 <button
                   type="button"
-                  className="px-3 py-1.5 ml-2 text-xs font-semibold text-center inline-flex items-center text-gray-800 bg-white rounded-md border-2 border-gray-300  hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-accent-300"
+                  className="px-3 py-1.5 ml-2 text-xs font-semibold text-center uppercase inline-flex items-center text-gray-800 bg-white rounded-md border-2 border-gray-300  hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-accent-300"
                 >
                   Reset
+                </button>
+                <button
+                  type="button"
+                  className="px-3 py-1.5 ml-2 text-xs font-semibold text-center uppercase inline-flex items-center text-white bg-accent rounded-md border-2 border-accent  hover:bg-accent-900 hover:border-accent-900 focus:ring-4 focus:outline-none focus:ring-accent-300"
+                  onClick={() => onSaveResume()}
+                >
+                  Save
                 </button>
                 <button
                   type="button"
