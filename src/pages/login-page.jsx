@@ -21,7 +21,8 @@ const LoginPage = () => {
     return redirect ? `${path}?redirect=${redirect}` : path;
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     const formData = formRef.current;
     const validations = {
       email: {
@@ -31,8 +32,6 @@ const LoginPage = () => {
       password: {
         type: "password",
         isRequired: [true, "is-required"],
-        min: [6, "min"],
-        max: [14, "max"],
       },
     };
     let isValid = formValidator(formData, validations);
@@ -101,15 +100,7 @@ const LoginPage = () => {
                     <p className="hidden peer-[.is-required]:peer-required:block mt-2 text-sm text-red-600 dark:text-red-500">
                       <span className="font-medium">Password</span> is rquired
                     </p>
-                    <p className="hidden peer-[.min]:peer-required:block mt-2 text-sm text-red-600 dark:text-red-500">
-                      <span className="font-medium">Password</span> should be at
-                      least 6 characters long
-                    </p>
-                    <p className="hidden peer-[.max]:peer-required:block mt-2 text-sm text-red-600 dark:text-red-500">
-                      <span className="font-medium">Password</span> should not
-                      be more than 14 characters
-                    </p>
-                    <div className="absolute inset-y-0 end-0 flex items-center pe-3.5">
+                    <div className="absolute inset-y-0 end-0 flex items-center pe-3.5 h-[54px]">
                       {showPassword ? (
                         <Tippy content="Hide Password">
                           <button
@@ -174,9 +165,9 @@ const LoginPage = () => {
                   </Link>
                 </div>
                 <button
-                  type="button"
+                  type="submit"
                   className="text-white bg-accent hover:opacity-95 focus:ring-4 focus:outline-none  focus:ring-accent-300 font-medium rounded-lg text-sm w-full px-5 py-4 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                  onClick={() => handleSubmit()}
+                  onClick={handleSubmit}
                 >
                   Login
                 </button>
