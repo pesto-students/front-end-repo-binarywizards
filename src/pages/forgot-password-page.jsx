@@ -32,10 +32,13 @@ const ForgotPasswordPage = () => {
                   <input
                     type="email"
                     id="email"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-accent focus:ring-blue-500 focus:border-blue-500 block w-full  p-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    className="peer bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  focus:border-blue-500 block w-full  p-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="Email address"
                     required
                   />
+                  <p className="hidden peer-[.is-required]:peer-required:block mt-2 text-sm text-red-600 dark:text-red-500">
+                    <span className="font-medium">Email</span> is rquired
+                  </p>
                 </div>
 
                 <button
@@ -48,10 +51,10 @@ const ForgotPasswordPage = () => {
               <div className="text-center">
                 <p className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
                   <Link
-                    to={"/"}
+                    to={"/login"}
                     className="text-primary hover:underline ml-2 focus:outline-accent dark:text-blue-500"
                   >
-                    Back to PerfectResume.ai
+                    Back to Login
                   </Link>
                 </p>
               </div>

@@ -41,7 +41,7 @@ const SignupPage = () => {
     const userForm = {
       email: formData.email.value,
       password: formData.password.value,
-      userType: formData.joinedAsReviewer.checked,
+      type: formData.joinedAsReviewer.checked,
     };
 
     await signUp(userForm);
@@ -75,11 +75,14 @@ const SignupPage = () => {
                   <input
                     type="email"
                     id="email"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-accent focus:ring-blue-500 focus:border-blue-500 block w-full  p-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    className="peer bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg   focus:border-blue-500 block w-full  p-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="Email address"
                     ref={emailRef}
                     required
                   />
+                  <p className="hidden peer-[.is-required]:peer-required:block mt-2 text-sm text-red-600 dark:text-red-500">
+                    <span className="font-medium">Email</span> is rquired
+                  </p>
                 </div>
                 <div className="mb-5">
                   <label
@@ -89,7 +92,26 @@ const SignupPage = () => {
                     Password
                   </label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 end-0 flex items-center pe-3.5">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      id="password"
+                      className="peer bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  focus:border-blue-500 block w-full p-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      placeholder="Password"
+                      ref={passwordRef}
+                      required
+                    />
+                    <p className="hidden peer-[.is-required]:peer-required:block mt-2 text-sm text-red-600 dark:text-red-500">
+                      <span className="font-medium">Password</span> is rquired
+                    </p>
+                    <p className="hidden peer-[.min]:peer-required:block mt-2 text-sm text-red-600 dark:text-red-500">
+                      <span className="font-medium">Password</span> should be at
+                      least 6 characters long
+                    </p>
+                    <p className="hidden peer-[.max]:peer-required:block mt-2 text-sm text-red-600 dark:text-red-500">
+                      <span className="font-medium">Password</span> should not
+                      be more than 14 characters
+                    </p>
+                    <div className="absolute inset-y-0 end-0 flex items-center pe-3.5 h-[54px]">
                       {showPassword ? (
                         <Tippy content="Hide Password">
                           <button
@@ -143,15 +165,6 @@ const SignupPage = () => {
                         </Tippy>
                       )}
                     </div>
-
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      id="password"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-accent focus:ring-blue-500 focus:border-blue-500 block w-full p-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      placeholder="Password"
-                      ref={passwordRef}
-                      required
-                    />
                   </div>
                 </div>
                 <div className="flex items-start mb-5">
@@ -171,6 +184,7 @@ const SignupPage = () => {
                   </label>
                 </div>
                 <button
+                  type="submit"
                   onClick={handleSubmit}
                   className="text-white bg-accent hover:opacity-95 focus:ring-4 focus:outline-none  focus:ring-accent-300 font-medium rounded-lg text-sm w-full px-5 py-4 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                 >
@@ -189,16 +203,16 @@ const SignupPage = () => {
                     </Link>
                   </p>
                 </div>
-                <div className="inline-flex items-center justify-center w-full">
+                <div className="hidden items-center justify-center w-full">
                   <hr className="w-64 h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" />
                   <span className="absolute px-3 font-medium text-gray-900 -translate-x-1/2 bg-white left-1/2 dark:text-white dark:bg-gray-900">
                     OR
                   </span>
                 </div>
-                <div>
+                <div className="hidden">
                   <button
                     type="button"
-                    className="text-gray-900 w-full bg-white hover:bg-gray-100 border border-gray-300 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-4 py-4 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 me-2 mb-2"
+                    className="text-gray-900 w-full bg-white hover:bg-gray-100 border border-gray-300 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-4 py-4 text-center items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 me-2 mb-2"
                   >
                     <Icon icon={googleLogo} className="mr-4" />
                     Continue with Google

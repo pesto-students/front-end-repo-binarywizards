@@ -1,5 +1,6 @@
 import { default as axios } from "axios";
 import {
+  getAccessToken,
   getRefreshToken,
   setAccessToken,
   setRefreshToken,
@@ -15,6 +16,17 @@ const instance = axios.create({
   timeout: 1000,
 });
 
+instance.interceptors.request.use(
+  (config) => {
+    const accessToken = getAccessToken();
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error),
+);
+
 instance.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -25,6 +37,9 @@ instance.interceptors.response.use(
       originalRequest._retry = true;
       try {
         refreshToken();
+        const accessToken = getAccessToken();
+        // Retry the original request with the new token
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
         return axios(originalRequest);
       } catch (error) {
         console.log(error);
