@@ -79,7 +79,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "build-resume/:id",
+        path: "build-resume/:action/:templateId/:resumeId?",
         element: (
           <PrivateRoute>
             <BuildResume />

@@ -2,62 +2,140 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Template from "src/components/template";
 import TemplateForm from "src/components/template-form";
-import { updateMetaData } from "src/store/builderSlice";
+import {
+  setResumeData,
+  setTemplateData,
+  updateResumeMetaData,
+} from "src/store/builderSlice";
 import GearIcon from "src/assets/icons/gear.svg?react";
 import DownloadIcon from "src/assets/icons/download.svg?react";
 import ShareIcon from "src/assets/icons/share.svg?react";
 import TimesIcon from "src/assets/icons/times.svg?react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { apiService } from "src/api-service/api-service";
+import { useEffect } from "react";
+import CreateResumeForm from "src/components/create-resume-form";
+import { getResume, updateResume } from "src/api-service/resume/resume-service";
+import { getTemplate } from "src/api-service/template/template-service";
 
 const BuildResume = () => {
-  const { id } = useParams();
+  const { action, templateId, resumeId } = useParams();
   const {
-    isLoading,
-    error,
-    data: resData,
-  } = useQuery({
-    queryKey: ["template"],
-    queryFn: async () => {
-      const res = await apiService.template(id);
-      console.log("res: ", res);
-      return res;
-    },
-  });
-  console.log("id: ", id);
-  const {
-    defaultData: { dataSchema, metaData, template },
+    template,
     resume,
+    metaData: finalMetaData,
   } = useSelector((state) => state.builderState);
-  const [data, setData] = useState({ ...metaData, ...resume.metaData });
+  const [metaData, setMetaData] = useState({});
   const [section, setSection] = useState("");
+  const [openCreateResumeForm, setOpenCreateResumeForm] = useState(false);
   const dispatch = useDispatch();
 
-  const onChange = (newData) => {
-    const metaData = { ...data, ...newData };
-    setData(metaData);
-    dispatch(updateMetaData({ metaData }));
+  const isUpdateMode = action === "update" && !!resumeId;
+
+  // Query for fetching template data
+  const fetchTemplate = async () => {
+    const response = await getTemplate(templateId);
+    if (!response.status) {
+      throw new Error(response.msg);
+    }
+    return response.data;
   };
-  const onDelete = (newData) => {
-    const metaData = { ...data, ...newData };
-    setData(metaData);
-    dispatch(updateMetaData({ metaData }));
+
+  // Query for fetching resume data
+  const fetchResume = async () => {
+    const response = await getResume(resumeId);
+    if (!response.status) {
+      throw new Error(response.msg);
+    }
+    return response.data;
+  };
+
+  // React Query for template
+  const {
+    isLoading: isTemplateLoading,
+    error: templateError,
+    data: templateData,
+  } = useQuery({
+    queryKey: ["template", templateId],
+    queryFn: fetchTemplate,
+    enabled: !!templateId, // Ensure templateId is not null or undefined
+  });
+
+  // React Query for resume
+  const {
+    isLoading: isResumeLoading,
+    error: resumeError,
+    data: resumeData,
+  } = useQuery({
+    queryKey: ["resume", resumeId],
+    queryFn: fetchResume,
+    enabled: isUpdateMode, // Only enabled if action is 'update' and resumeId is present
+  });
+
+  const updateMetaData = (newMetaData) => {
+    const updatedMetaData = { ...metaData, ...newMetaData };
+    setMetaData(updatedMetaData);
+    dispatch(updateResumeMetaData({ metaData: updatedMetaData }));
+  };
+
+  const resetMetaData = () => {
+    if (isUpdateMode) {
+      setMetaData(resume.metaData);
+    } else {
+      setMetaData(template.metaData);
+    }
+  };
+
+  const onChange = (newMetaData) => {
+    updateMetaData(newMetaData);
+  };
+  const onDelete = (newMetaData) => {
+    updateMetaData(newMetaData);
   };
   const onSelectedSection = (section) => {
     setSection(section);
   };
 
   const onSaveResume = () => {
-    console.log("resume: ", resume.metaData);
+    if (!isUpdateMode) {
+      setOpenCreateResumeForm(true);
+    } else {
+      updateResume(resume.id, { metaData: finalMetaData });
+    }
   };
 
-  // if (isLoading) return "Loading...";
-  // if (error) return "An error has occurred: " + error.message;
-  // if (resData) return JSON.stringify(resData);
+  useEffect(() => {
+    if (resumeData) {
+      updateMetaData(resumeData.metaData);
+      dispatch(setResumeData({ resume: resumeData }));
+    }
+  }, [resumeData]);
+
+  useEffect(() => {
+    if (templateData) {
+      if (!isUpdateMode) {
+        updateMetaData(templateData.metaData);
+      }
+      dispatch(setTemplateData({ template: templateData }));
+    }
+  }, [templateData]);
+
+  // Conditional rendering or further logic
+  if (isTemplateLoading || isResumeLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (templateError || (action === "update" && resumeError)) {
+    return <div>Error fetching data...</div>;
+  }
+
   return (
     <div className="h-full flex flex-col px-10 py-4">
       <h1>Build Resume</h1>
+      <CreateResumeForm
+        openModal={openCreateResumeForm}
+        setOpenModal={setOpenCreateResumeForm}
+      />
 
       <div className="flex-1 flex justify-center gap-x-[5%]">
         <div className="flex flex-col items-start justify-start max-w-[600px] w-full h-auto mb-8">
@@ -93,8 +171,8 @@ const BuildResume = () => {
               </div>
               <TemplateForm
                 section={section}
-                dataSchema={dataSchema[section]}
-                data={data[section]}
+                formSchema={templateData.formSchema[section]}
+                data={metaData[section]}
                 onChange={onChange}
                 onDelete={onDelete}
               />
@@ -127,6 +205,7 @@ const BuildResume = () => {
                 <button
                   type="button"
                   className="px-3 py-1.5 ml-2 text-xs font-semibold text-center uppercase inline-flex items-center text-gray-800 bg-white rounded-md border-2 border-gray-300  hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-accent-300"
+                  onClick={() => resetMetaData()}
                 >
                   Reset
                 </button>
@@ -135,7 +214,7 @@ const BuildResume = () => {
                   className="px-3 py-1.5 ml-2 text-xs font-semibold text-center uppercase inline-flex items-center text-white bg-accent rounded-md border-2 border-accent  hover:bg-accent-900 hover:border-accent-900 focus:ring-4 focus:outline-none focus:ring-accent-300"
                   onClick={() => onSaveResume()}
                 >
-                  Save
+                  {isUpdateMode ? "Update" : "Save"}
                 </button>
                 <button
                   type="button"
@@ -155,8 +234,8 @@ const BuildResume = () => {
           </div>
           <div className=" w-full shadow-[0_6px_15px_#00000029] p-1 rounded border-t border-solid border-[#f3f3f3]">
             <Template
-              json={template}
-              data={data}
+              json={templateData.template}
+              data={metaData}
               onSelectedSection={onSelectedSection}
             />
           </div>

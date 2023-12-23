@@ -1,4 +1,3 @@
-const domain = "http://localhost:3000/";
 const prefix = "api/v1";
 
 function routeMap(path) {
@@ -15,6 +14,12 @@ const api = {
   },
   templates: {
     get: routeMap("/templates"),
+  },
+  resume: {
+    create: routeMap("/resumes"),
+    update: routeMap("/resumes"),
+    get: routeMap("/resumes"),
+    getAll: routeMap("/resumes"),
   },
 };
 

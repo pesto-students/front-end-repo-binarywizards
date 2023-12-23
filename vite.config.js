@@ -10,4 +10,7 @@ export default defineConfig({
       src: "/src",
     },
   },
+  esbuild: {
+    drop: ["console", "debugger"],
+  },
 });
