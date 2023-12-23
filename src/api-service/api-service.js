@@ -6,7 +6,6 @@ const login = async (credentials) => {
   if (!response.status) {
     throw new Error(response.msg);
   }
-
   return response.data;
 };
 
@@ -15,20 +14,10 @@ const signUp = async (userData) => {
   if (!response.status) {
     throw new Error(response.msg);
   }
-  console.log(response.data);
-  console.log(response);
   return response.data;
 };
 const user = async (params) => {
   const response = await axiosService.get(api.user.profile, params);
-  if (!response.status) {
-    throw new Error(response.msg);
-  }
-
-  return response.data;
-};
-const template = async (params) => {
-  const response = await axiosService.get(api.templates.get, params);
   if (!response.status) {
     throw new Error(response.msg);
   }
@@ -40,7 +29,6 @@ const apiService = {
   login,
   signUp,
   user,
-  template,
 };
 
 export { apiService };

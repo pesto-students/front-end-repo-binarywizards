@@ -3,7 +3,7 @@ import { useRef } from "react";
 import { debounce, isArray } from "src/utils/utils";
 import TextArea from "./form/text-area";
 import InputField from "./form/input-field";
-const TemplateForm = ({ dataSchema, data, onChange, onDelete, section }) => {
+const TemplateForm = ({ formSchema, data, onChange, onDelete, section }) => {
   const formRef = useRef();
 
   const onFormChange = () => {
@@ -37,7 +37,7 @@ const TemplateForm = ({ dataSchema, data, onChange, onDelete, section }) => {
     const formData = formRef.current;
 
     const finalData = {};
-    if (dataSchema.fieldType.repeatable && dataSchema.fieldType.isBlock) {
+    if (formSchema.fieldType.repeatable && formSchema.fieldType.isBlock) {
       const newFormData = new FormData(formRef.current);
       let tempData = [];
       for (let [key, value] of newFormData.entries()) {
@@ -49,7 +49,7 @@ const TemplateForm = ({ dataSchema, data, onChange, onDelete, section }) => {
       let newData = mergeItemsByOrder(tempData);
       finalData[section] = newData;
     }
-    if (dataSchema.fieldType.repeatable && !dataSchema.fieldType.isBlock) {
+    if (formSchema.fieldType.repeatable && !formSchema.fieldType.isBlock) {
       const newFormData = new FormData(formRef.current);
       let newData = [];
       for (let [key, value] of newFormData.entries()) {
@@ -60,7 +60,7 @@ const TemplateForm = ({ dataSchema, data, onChange, onDelete, section }) => {
       }
       finalData[section] = newData;
     }
-    if (!dataSchema.fieldType.repeatable) {
+    if (!formSchema.fieldType.repeatable) {
       let newData = {};
       for (const key in data) {
         if (Object.hasOwnProperty.call(data, key)) {
@@ -77,11 +77,11 @@ const TemplateForm = ({ dataSchema, data, onChange, onDelete, section }) => {
     onChange(finalData);
   };
 
-  const generateForm = (dataSchema, data) => {
-    if (dataSchema.fieldType.repeatable && isArray(data)) {
+  const generateForm = (formSchema, data) => {
+    if (formSchema.fieldType.repeatable && isArray(data)) {
       let formFields = [];
       data.forEach((item) => {
-        dataSchema.schema.forEach((fieldData) => {
+        formSchema.schema.forEach((fieldData) => {
           let field = null;
           if (fieldData.type === "input") {
             field = (
@@ -103,7 +103,7 @@ const TemplateForm = ({ dataSchema, data, onChange, onDelete, section }) => {
           }
           formFields.push(field);
         });
-        if (dataSchema.fieldType.isBlock) {
+        if (formSchema.fieldType.isBlock) {
           let action = (
             <div key={`Delete-block-${item.order}`} className="mt-4 mb-20">
               <button
@@ -118,7 +118,7 @@ const TemplateForm = ({ dataSchema, data, onChange, onDelete, section }) => {
           formFields.push(action);
         }
       });
-      if (dataSchema.fieldType.isBlock) {
+      if (formSchema.fieldType.isBlock) {
         let action = (
           <div key={`Add-block`} className="mt-4 mb-2">
             <button className="rounded py-1.5 text-sm text-primary uppercase font-semibold border border-accent-900 border-dashed w-full">
@@ -130,8 +130,8 @@ const TemplateForm = ({ dataSchema, data, onChange, onDelete, section }) => {
       }
       return formFields;
     }
-    if (!(dataSchema.fieldType.repeatable || isArray(data))) {
-      return dataSchema.schema.map((fieldData) => {
+    if (!(formSchema.fieldType.repeatable || isArray(data))) {
+      return formSchema.schema.map((fieldData) => {
         if (fieldData.type === "input") {
           return (
             <div key={fieldData.label} className="mb-6">
@@ -156,14 +156,14 @@ const TemplateForm = ({ dataSchema, data, onChange, onDelete, section }) => {
   return (
     <div className="max-h-[840px] p-8 overflow-auto mb-10 custom-scrollbar">
       <form onChange={onFormChange} ref={formRef}>
-        {generateForm(dataSchema, data)}
+        {generateForm(formSchema, data)}
       </form>
     </div>
   );
 };
 TemplateForm.propTypes = {
   section: PropTypes.string,
-  dataSchema: PropTypes.shape({
+  formSchema: PropTypes.shape({
     fieldType: PropTypes.shape({
       repeatable: PropTypes.bool,
       isBlock: PropTypes.bool,

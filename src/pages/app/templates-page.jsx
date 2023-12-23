@@ -13,7 +13,8 @@ const TemplatesPage = () => {
 
   const createResume = (id) => {
     id = id || "658421f96582459b0a2a6f09";
-    navigate(`../build-resume/${id}`);
+    const action = "create";
+    navigate(`../build-resume/${action}/${id}`);
   };
   return (
     <div className="h-full flex flex-col px-10 py-8">

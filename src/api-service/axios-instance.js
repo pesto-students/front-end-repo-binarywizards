@@ -6,9 +6,11 @@ import {
   setRefreshToken,
 } from "src/utils/auth";
 
-// const api = "https://perfectresume-ai.onrender.com";
-// const dev = "http://localhost:5500";
-const backend = "http://localhost:3000";
+const isProduction = import.meta.env.PROD;
+const prod = "https://perfectresume-ai.onrender.com";
+const dev = "http://localhost:3000";
+
+const backend = isProduction ? prod : dev;
 
 const instance = axios.create({
   baseURL: backend,
@@ -76,9 +78,18 @@ const axiosService = {
     }
     return { status: true, data: response.data };
   },
+  put: async (endpoint, payload, params) => {
+    if (params) {
+      endpoint = `${endpoint}/${params}`;
+    }
+    const response = await instance.put(endpoint, payload);
+
+    if (!successCodes.includes(response.status)) {
+      return { status: false, msg: response.message };
+    }
+    return { status: true, data: response.data };
+  },
   get: async (endpoint, params) => {
-    console.log("endpoint: ", endpoint);
-    console.log("params: ", params);
     if (params) {
       endpoint = `${endpoint}/${params}`;
     }
