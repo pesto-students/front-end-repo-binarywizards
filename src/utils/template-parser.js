@@ -1,4 +1,4 @@
-import { validator } from "@exodus/schemasafe";
+import { validator } from "./form-validator";
 import { isArray, isObject } from "./utils";
 
 const ignoreTags = ["input", "form", "select", "textarea", "script"];

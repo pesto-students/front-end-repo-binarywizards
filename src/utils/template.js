@@ -59,7 +59,7 @@ const metaData = {
   ],
 };
 
-const dataSchema = {
+const formSchema = {
   titleSection: {
     fieldType: {
       repeatable: false,
@@ -71,6 +71,7 @@ const dataSchema = {
         label: "First Name",
         value: "",
         placeholder: "e.g John",
+        maxLength: 40,
       },
       {
         type: "input",
@@ -78,6 +79,7 @@ const dataSchema = {
         label: "Last Name",
         value: "",
         placeholder: "e.g Doe",
+        maxLength: 40,
       },
       {
         type: "input",
@@ -85,6 +87,7 @@ const dataSchema = {
         label: "Role",
         value: "",
         placeholder: "e.g ML Engineer",
+        maxLength: 40,
       },
     ],
   },
@@ -102,6 +105,7 @@ const dataSchema = {
         value: "",
         placeholder:
           "e.g A Python developer with 5.8 years of experience in Django, Flask for Retail eCommerce, POS and Storage domain.",
+        maxLength: 350,
       },
     ],
   },
@@ -117,6 +121,7 @@ const dataSchema = {
         label: "Address",
         value: "",
         placeholder: "e.g 3205 Eden Drive, Glen All Virginia - 23060",
+        maxLength: 80,
       },
       {
         type: "input",
@@ -124,6 +129,7 @@ const dataSchema = {
         label: "Email",
         value: "",
         placeholder: "e.g john@gmail.com",
+        maxLength: 80,
       },
       {
         type: "input",
@@ -131,13 +137,14 @@ const dataSchema = {
         label: "Phone",
         value: "",
         placeholder: "e.g 9123456789",
+        maxLength: 40,
       },
     ],
   },
   skills: {
     fieldType: {
       repeatable: true,
-      isBlock: false,
+      isBlock: true,
       max: 4,
     },
     schema: [
@@ -147,6 +154,7 @@ const dataSchema = {
         label: "Skill",
         value: "",
         placeholder: "e.g Javascript",
+        maxLength: 40,
       },
     ],
   },
@@ -163,6 +171,7 @@ const dataSchema = {
         label: "Achievement",
         value: "",
         placeholder: "e.g Javascript",
+        maxLength: 150,
       },
     ],
   },
@@ -179,6 +188,7 @@ const dataSchema = {
         label: "Title",
         value: "",
         placeholder: "e.g QuantumAI Labs",
+        maxLength: 40,
       },
       {
         type: "input",
@@ -186,6 +196,7 @@ const dataSchema = {
         label: "Role / Responsibility",
         value: "",
         placeholder: "e.g ML Engineer",
+        maxLength: 40,
       },
       {
         type: "input",
@@ -193,6 +204,7 @@ const dataSchema = {
         label: "Start Date",
         value: "",
         placeholder: "e.g Apr 2019",
+        maxLength: 40,
       },
       {
         type: "input",
@@ -200,6 +212,7 @@ const dataSchema = {
         label: "End Date",
         value: "",
         placeholder: "e.g Apr 2020",
+        maxLength: 40,
       },
       {
         type: "textarea",
@@ -208,6 +221,7 @@ const dataSchema = {
         label: "Point 1",
         value: "",
         placeholder: "e.g Build basic ETL that ingested transactional",
+        maxLength: 350,
       },
       {
         type: "textarea",
@@ -216,6 +230,7 @@ const dataSchema = {
         label: "Point 2",
         value: "",
         placeholder: "e.g Build basic ETL that ingested transactional",
+        maxLength: 350,
       },
     ],
   },
@@ -1386,4 +1401,4 @@ const template = {
   ],
 };
 
-export { template, dataSchema, metaData };
+export { template, formSchema, metaData };

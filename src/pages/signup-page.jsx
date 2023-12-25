@@ -3,9 +3,45 @@ import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import Icon from "src/components/icon";
 import googleLogo from "src/assets/google-logo.svg";
-import { formValidator } from "src/utils/form-validator";
+import {
+  clearErrors,
+  parseErrors,
+  renderErrors,
+  validator,
+} from "src/utils/form-validator";
 import useAuth from "src/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+
+const validate = validator({
+  type: "object",
+  required: ["email", "password"],
+  properties: {
+    email: {
+      type: "string",
+      format: "email",
+      minLength: 1,
+      errorMessage: {
+        minLength: "Email is required",
+        format: "Please provide a valid Email",
+      },
+    },
+    password: {
+      type: "string",
+      minLength: 1,
+      maxLength: 16,
+      errorMessage: {
+        minLength: "Password is required",
+        maxLength: "Password should not be more than 16 charecters",
+      },
+    },
+  },
+  errorMessage: {
+    required: {
+      email: "Email is required",
+      password: "Password is required",
+    },
+  },
+});
 
 const SignupPage = () => {
   const navigate = useNavigate();
@@ -23,29 +59,25 @@ const SignupPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = formRef.current;
-    const validations = {
-      email: {
-        type: "email",
-        isRequired: [true, "is-required"],
-      },
-      password: {
-        type: "password",
-        isRequired: [true, "is-required"],
-        min: [6, "min"],
-        max: [14, "max"],
-      },
-    };
-    let isValid = formValidator(formData, validations);
-    if (!isValid) return;
+    const { email, password, joinedAsReviewer } = formData;
+    const isValid = validate({ email: email.value, password: password.value });
+    if (!isValid) {
+      const errors = parseErrors(validate.errors);
+      renderErrors(errors, formData, ["email", "password"]);
+      return;
+    }
+    clearErrors(formData, ["email", "password"]);
 
     const userForm = {
-      email: formData.email.value,
-      password: formData.password.value,
-      type: formData.joinedAsReviewer.checked,
+      email: email.value,
+      password: password.value,
+      type: joinedAsReviewer.checked,
     };
 
-    await signUp(userForm);
-    navigate("/app");
+    const success = await signUp(userForm);
+    if (success) {
+      navigate("/app");
+    }
   };
 
   return (
@@ -80,9 +112,10 @@ const SignupPage = () => {
                     ref={emailRef}
                     required
                   />
-                  <p className="hidden peer-[.is-required]:peer-required:block mt-2 text-sm text-red-600 dark:text-red-500">
-                    <span className="font-medium">Email</span> is rquired
-                  </p>
+                  <p
+                    data-error="true"
+                    className="hidden peer-[.error]:block mt-2 text-sm text-red-600 dark:text-red-500"
+                  ></p>
                 </div>
                 <div className="mb-5">
                   <label
@@ -100,17 +133,10 @@ const SignupPage = () => {
                       ref={passwordRef}
                       required
                     />
-                    <p className="hidden peer-[.is-required]:peer-required:block mt-2 text-sm text-red-600 dark:text-red-500">
-                      <span className="font-medium">Password</span> is rquired
-                    </p>
-                    <p className="hidden peer-[.min]:peer-required:block mt-2 text-sm text-red-600 dark:text-red-500">
-                      <span className="font-medium">Password</span> should be at
-                      least 6 characters long
-                    </p>
-                    <p className="hidden peer-[.max]:peer-required:block mt-2 text-sm text-red-600 dark:text-red-500">
-                      <span className="font-medium">Password</span> should not
-                      be more than 14 characters
-                    </p>
+                    <p
+                      data-error="true"
+                      className="hidden peer-[.error]:block mt-2 text-sm text-red-600 dark:text-red-500"
+                    ></p>
                     <div className="absolute inset-y-0 end-0 flex items-center pe-3.5 h-[54px]">
                       {showPassword ? (
                         <Tippy content="Hide Password">

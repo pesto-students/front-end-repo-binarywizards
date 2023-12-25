@@ -2,7 +2,41 @@ import Tippy from "@tippyjs/react";
 import { useRef, useState } from "react";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import useAuth from "src/hooks/useAuth";
-import { formValidator } from "src/utils/form-validator";
+import {
+  clearErrors,
+  parseErrors,
+  renderErrors,
+  validator,
+} from "src/utils/form-validator";
+
+const validate = validator({
+  type: "object",
+  required: ["email", "password"],
+  properties: {
+    email: {
+      type: "string",
+      format: "email",
+      minLength: 1,
+      errorMessage: {
+        minLength: "Email is required",
+        format: "Please provide a valid Email",
+      },
+    },
+    password: {
+      type: "string",
+      minLength: 1,
+      errorMessage: {
+        minLength: "Password is required",
+      },
+    },
+  },
+  errorMessage: {
+    required: {
+      email: "Email is required",
+      password: "Password is required",
+    },
+  },
+});
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -24,26 +58,20 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = formRef.current;
-    const validations = {
-      email: {
-        type: "email",
-        isRequired: [true, "is-required"],
-      },
-      password: {
-        type: "password",
-        isRequired: [true, "is-required"],
-      },
-    };
-    let isValid = formValidator(formData, validations);
-    if (!isValid) return;
     const { email, password } = formData;
+    const isValid = validate({ email: email.value, password: password.value });
+    if (!isValid) {
+      const errors = parseErrors(validate.errors);
+      renderErrors(errors, formData, ["email", "password"]);
+      return;
+    }
+    clearErrors(formData, ["email", "password"]);
+
     const credentials = { email: email.value, password: password.value };
+
     const success = await authorize(credentials);
     if (success) {
       navigate("/app");
-    } else {
-      //show error toast
-      console.log("Failed: ", success);
     }
   };
 
@@ -78,9 +106,10 @@ const LoginPage = () => {
                     placeholder="Email address"
                     required
                   />
-                  <p className="hidden peer-[.is-required]:peer-required:block mt-2 text-sm text-red-600 dark:text-red-500">
-                    <span className="font-medium">Email</span> is rquired
-                  </p>
+                  <p
+                    data-error="true"
+                    className="hidden peer-[.error]:block mt-2 text-sm text-red-600 dark:text-red-500"
+                  ></p>
                 </div>
                 <div className="mb-5">
                   <label
@@ -97,9 +126,10 @@ const LoginPage = () => {
                       placeholder="Password"
                       required
                     />
-                    <p className="hidden peer-[.is-required]:peer-required:block mt-2 text-sm text-red-600 dark:text-red-500">
-                      <span className="font-medium">Password</span> is rquired
-                    </p>
+                    <p
+                      data-error="true"
+                      className="hidden peer-[.error]:block mt-2 text-sm text-red-600 dark:text-red-500"
+                    ></p>
                     <div className="absolute inset-y-0 end-0 flex items-center pe-3.5 h-[54px]">
                       {showPassword ? (
                         <Tippy content="Hide Password">
