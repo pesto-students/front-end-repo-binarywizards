@@ -3,26 +3,16 @@ import { api } from "./config";
 
 const login = async (credentials) => {
   const response = await axiosService.post(api.auth.login, credentials);
-  if (!response.status) {
-    throw new Error(response.msg);
-  }
-  return response.data;
+  return response;
 };
 
 const signUp = async (userData) => {
   const response = await axiosService.post(api.auth.signUp, userData);
-  if (!response.status) {
-    throw new Error(response.msg);
-  }
-  return response.data;
+  return response;
 };
 const user = async (params) => {
   const response = await axiosService.get(api.user.profile, params);
-  if (!response.status) {
-    throw new Error(response.msg);
-  }
-
-  return response.data;
+  return response;
 };
 
 const apiService = {

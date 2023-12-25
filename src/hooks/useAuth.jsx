@@ -2,6 +2,7 @@ import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useState } from "react";
+import { toast } from "react-toastify";
 import { apiService } from "src/api-service/api-service";
 import { refreshToken } from "src/api-service/axios-instance";
 import {
@@ -36,25 +37,34 @@ const useAuth = () => {
   const authorize = async (credentials) => {
     // Perform the login logic, probably an API call
     // If successful, set the token in localStorage and update state
-    const { accessToken } = await apiService.login(credentials);
-    if (accessToken) {
+    const response = await apiService.login(credentials);
+    if (response && response.status) {
+      const { accessToken } = response.data;
       setAccessToken(accessToken);
       setRefreshToken("");
       setIsAuthenticated(true);
       return true;
     }
+    toast.error(response.msg, {
+      position: toast.POSITION.TOP_CENTER,
+    });
+
     return false;
   };
 
   const signUp = async (userData) => {
-    const { accessToken } = await apiService.signUp(userData);
-    console.log(accessToken);
-    if (accessToken) {
+    const response = await apiService.signUp(userData);
+    if (response && response.status) {
+      const { accessToken } = response.data;
       setAccessToken(accessToken);
       setRefreshToken("");
       setIsAuthenticated(true);
       return true;
     }
+    toast.error(response.msg, {
+      position: toast.POSITION.TOP_CENTER,
+    });
+
     return false;
   };
 

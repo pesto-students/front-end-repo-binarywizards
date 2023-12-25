@@ -2,6 +2,8 @@ import "flowbite";
 import Router from "./router";
 import { Provider } from "react-redux";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import { store } from "./store/store";
 
@@ -16,6 +18,9 @@ function App() {
       <Provider store={store}>
         <QueryClientProvider client={queryClient}>
           <div className="App">
+            <div>
+              <ToastContainer />
+            </div>
             <Router></Router>
           </div>
         </QueryClientProvider>

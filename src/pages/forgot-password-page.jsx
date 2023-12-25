@@ -1,6 +1,47 @@
+import { useRef } from "react";
 import { Link } from "react-router-dom";
+import {
+  clearErrors,
+  parseErrors,
+  renderErrors,
+  validator,
+} from "src/utils/form-validator";
+
+const validate = validator({
+  type: "object",
+  required: ["email"],
+  properties: {
+    email: {
+      type: "string",
+      format: "email",
+      minLength: 1,
+      errorMessage: {
+        minLength: "Email is required",
+        format: "Please provide a valid Email",
+      },
+    },
+  },
+  errorMessage: {
+    required: {
+      email: "Email is required",
+    },
+  },
+});
 
 const ForgotPasswordPage = () => {
+  const formRef = useRef();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = formRef.current;
+    const { email } = formData;
+    const isValid = validate({ email: email.value });
+    if (!isValid) {
+      const errors = parseErrors(validate.errors);
+      renderErrors(errors, formData, ["email"]);
+      return;
+    }
+    clearErrors(formData, ["email"]);
+  };
   return (
     <div className="h-full flex flex-col justify-center bg-gray-50 dark:bg-gray-900 ">
       <section>
@@ -21,7 +62,7 @@ const ForgotPasswordPage = () => {
                 reset your password.
               </p>
 
-              <form className="max-w-sm mx-auto">
+              <form className="max-w-sm mx-auto" ref={formRef}>
                 <div className="mb-5">
                   <label
                     htmlFor="email"
@@ -36,14 +77,16 @@ const ForgotPasswordPage = () => {
                     placeholder="Email address"
                     required
                   />
-                  <p className="hidden peer-[.is-required]:peer-required:block mt-2 text-sm text-red-600 dark:text-red-500">
-                    <span className="font-medium">Email</span> is rquired
-                  </p>
+                  <p
+                    data-error="true"
+                    className="hidden peer-[.error]:block mt-2 text-sm text-red-600 dark:text-red-500"
+                  ></p>
                 </div>
 
                 <button
                   type="submit"
                   className="text-white bg-accent hover:opacity-95 focus:ring-4 focus:outline-none  focus:ring-accent-300 font-medium rounded-lg text-sm w-full px-5 py-4 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  onClick={handleSubmit}
                 >
                   Continue
                 </button>

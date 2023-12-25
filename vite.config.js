@@ -3,14 +3,20 @@ import react from "@vitejs/plugin-react";
 import svgr from "vite-plugin-svgr";
 
 // https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [react(), svgr()],
-  resolve: {
-    alias: {
-      src: "/src",
+export default defineConfig(({ mode }) => {
+  const defaultConfig = {
+    plugins: [react(), svgr()],
+    resolve: {
+      alias: {
+        src: "/src",
+      },
     },
-  },
-  esbuild: {
-    drop: ["console", "debugger"],
-  },
+  };
+  if (mode === "production") {
+    defaultConfig["esbuild"] = {
+      drop: ["console", "debugger"],
+    };
+  }
+
+  return defaultConfig;
 });
