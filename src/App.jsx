@@ -11,7 +11,13 @@ import { store } from "./store/store";
 import "./App.css";
 import "tippy.js/dist/tippy.css";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+    },
+  },
+});
 
 function App() {
   return (
