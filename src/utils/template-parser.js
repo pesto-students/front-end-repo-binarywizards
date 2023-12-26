@@ -62,6 +62,7 @@ function createJSONFromHTML(node) {
 }
 
 function createHTMLFromJSON(json, data) {
+
   let element;
 
   // Handle blocks

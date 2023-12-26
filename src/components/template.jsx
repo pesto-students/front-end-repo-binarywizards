@@ -10,7 +10,6 @@ function createMarkup(template) {
 }
 
 const Template = ({ json, data, onSelectedSection }) => {
-  // console.log("props: ", json);
   let myTemplate = createHTMLFromJSON(json, data);
   const handleSectionSelected = (event) => {
     const target = event.currentTarget;

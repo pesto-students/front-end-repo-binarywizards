@@ -71,7 +71,7 @@ const SignupPage = () => {
     const userForm = {
       email: email.value,
       password: password.value,
-      type: joinedAsReviewer.checked,
+      userType: joinedAsReviewer.checked,
     };
 
     const success = await signUp(userForm);
