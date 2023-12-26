@@ -323,8 +323,9 @@ const template = {
                   type: "element",
                   tagName: "div",
                   attributes: {
-                    id: "IGNORE_THIS_IN_PDF",
+                    class: "IGNORE_THIS_IN_PDF",
                   },
+                  className: "IGNORE_THIS_IN_PDF",
                   children: [
                     {
                       type: "element",
@@ -617,8 +618,9 @@ const template = {
                   type: "element",
                   tagName: "div",
                   attributes: {
-                    id: "IGNORE_THIS_IN_PDF",
+                    class: "IGNORE_THIS_IN_PDF",
                   },
+                  className: "IGNORE_THIS_IN_PDF",
                   children: [
                     {
                       type: "element",
@@ -756,8 +758,9 @@ const template = {
                   type: "element",
                   tagName: "div",
                   attributes: {
-                    id: "IGNORE_THIS_IN_PDF",
+                    class: "IGNORE_THIS_IN_PDF",
                   },
+                  className: "IGNORE_THIS_IN_PDF",
                   children: [
                     {
                       type: "element",
@@ -923,8 +926,9 @@ const template = {
                       type: "element",
                       tagName: "div",
                       attributes: {
-                        id: "IGNORE_THIS_IN_PDF",
+                        class: "IGNORE_THIS_IN_PDF",
                       },
+                      className: "IGNORE_THIS_IN_PDF",
                       children: [
                         {
                           type: "element",
@@ -1059,8 +1063,9 @@ const template = {
                   type: "element",
                   tagName: "div",
                   attributes: {
-                    id: "IGNORE_THIS_IN_PDF",
+                    class: "IGNORE_THIS_IN_PDF",
                   },
+                  className: "IGNORE_THIS_IN_PDF",
                   children: [
                     {
                       type: "element",
@@ -1174,8 +1179,9 @@ const template = {
                   type: "element",
                   tagName: "div",
                   attributes: {
-                    id: "IGNORE_THIS_IN_PDF",
+                    class: "IGNORE_THIS_IN_PDF",
                   },
+                  className: "IGNORE_THIS_IN_PDF",
                   children: [
                     {
                       type: "element",

@@ -2,11 +2,15 @@ import { axiosService } from "../axios-instance";
 import { api } from "../config";
 
 const createResume = async (payload) => {
-  const response = await axiosService.post(api.resume.create, payload);
+  const response = await axiosService.multipart(api.resume.create, payload);
   return response;
 };
 const updateResume = async (id, payload) => {
-  const response = await axiosService.put(api.resume.create, payload, id);
+  const response = await axiosService.multipartPut(
+    api.resume.update,
+    payload,
+    id,
+  );
   return response;
 };
 const getResume = async (id) => {
@@ -15,7 +19,7 @@ const getResume = async (id) => {
 };
 
 const getAllResumes = async () => {
-  const response = await axiosService.get(api.resume.get);
+  const response = await axiosService.get(api.resume.getAll);
   return response;
 };
 

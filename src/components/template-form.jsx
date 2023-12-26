@@ -77,6 +77,17 @@ const TemplateForm = ({ formSchema, data, onChange, onDelete, section }) => {
     onChange(finalData);
   };
 
+  const generateNewBlock = (formSchema, order) => {
+    const { schema } = formSchema;
+    const newBlock = schema.reduce((acc, current) => {
+      acc[current.key] = current.placeholder;
+      return acc;
+    }, {});
+    newBlock["order"] = order + 1;
+    const finalData = { [section]: [...data, newBlock] };
+    onChange(finalData);
+  };
+
   const generateForm = (formSchema, data) => {
     if (formSchema.fieldType.repeatable && isArray(data)) {
       let formFields = [];
@@ -118,10 +129,23 @@ const TemplateForm = ({ formSchema, data, onChange, onDelete, section }) => {
           formFields.push(action);
         }
       });
-      if (formSchema.fieldType.isBlock) {
+      if (
+        formSchema.fieldType.isBlock &&
+        data.length < formSchema.fieldType.max
+      ) {
+        let largestOrder = data.reduce(
+          (max, item) => (item.order > max ? item.order : max),
+          data[0].order,
+        );
         let action = (
           <div key={`Add-block`} className="mt-4 mb-2">
-            <button className="rounded py-1.5 text-sm text-primary uppercase font-semibold border border-accent-900 border-dashed w-full">
+            <button
+              type="button"
+              className="rounded py-1.5 text-sm text-primary uppercase font-semibold border border-accent-900 border-dashed w-full"
+              onClick={() => {
+                generateNewBlock(formSchema, largestOrder);
+              }}
+            >
               Add Block
             </button>
           </div>
@@ -167,6 +191,7 @@ TemplateForm.propTypes = {
     fieldType: PropTypes.shape({
       repeatable: PropTypes.bool,
       isBlock: PropTypes.bool,
+      max: PropTypes.number,
     }),
     schema: PropTypes.arrayOf(PropTypes.object),
   }),

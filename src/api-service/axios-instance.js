@@ -119,6 +119,41 @@ const axiosService = {
         return resolveError(error);
       });
   },
+  multipart: async (endpoint, formData) => {
+    return instance
+      .post(endpoint, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        timeout: 1000 * 10,
+      })
+      .then(function (response) {
+        console.log("Response: ", response);
+        return { status: true, data: response.data };
+      })
+      .catch(function (error) {
+        return resolveError(error);
+      });
+  },
+  multipartPut: async (endpoint, formData, params) => {
+    if (params) {
+      endpoint = `${endpoint}/${params}`;
+    }
+    return instance
+      .put(endpoint, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        timeout: 1000 * 10,
+      })
+      .then(function (response) {
+        console.log("Response: ", response);
+        return { status: true, data: response.data };
+      })
+      .catch(function (error) {
+        return resolveError(error);
+      });
+  },
   put: async (endpoint, payload, params) => {
     if (params) {
       endpoint = `${endpoint}/${params}`;
