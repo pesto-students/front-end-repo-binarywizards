@@ -8,6 +8,7 @@ import {
   renderErrors,
   validator,
 } from "src/utils/form-validator";
+import SpinnerIcon from "src/assets/icons/spinner.svg?react";
 
 const validate = validator({
   type: "object",
@@ -45,6 +46,7 @@ const LoginPage = () => {
   const { authorize } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const formRef = useRef();
+  const [isLoading, setIsLoading] = useState(false);
 
   const togglePasswordVisibility = (flag) => {
     setShowPassword(flag);
@@ -69,7 +71,9 @@ const LoginPage = () => {
 
     const credentials = { email: email.value, password: password.value };
 
+    setIsLoading(true);
     const success = await authorize(credentials);
+    setIsLoading(false);
     if (success) {
       navigate("/app");
     }
@@ -199,7 +203,14 @@ const LoginPage = () => {
                   className="text-white bg-accent hover:opacity-95 focus:ring-4 focus:outline-none  focus:ring-accent-300 font-medium rounded-lg text-sm w-full px-5 py-4 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                   onClick={handleSubmit}
                 >
-                  Login
+                  {isLoading ? (
+                    <>
+                      <SpinnerIcon />
+                      Connecting...
+                    </>
+                  ) : (
+                    "Login"
+                  )}
                 </button>
               </form>
               <div className="text-center">

@@ -11,6 +11,7 @@ import {
 } from "src/utils/form-validator";
 import useAuth from "src/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import SpinnerIcon from "src/assets/icons/spinner.svg?react";
 
 const validate = validator({
   type: "object",
@@ -27,10 +28,10 @@ const validate = validator({
     },
     password: {
       type: "string",
-      minLength: 1,
+      minLength: 8,
       maxLength: 16,
       errorMessage: {
-        minLength: "Password is required",
+        minLength: "Password must be required and at least 8 characters long",
         maxLength: "Password should not be more than 16 charecters",
       },
     },
@@ -51,6 +52,7 @@ const SignupPage = () => {
   const passwordRef = useRef(null);
   const communityFlag = useRef(null);
   const formRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const togglePasswordVisibility = (flag) => {
     setShowPassword(flag);
@@ -74,7 +76,9 @@ const SignupPage = () => {
       userType: joinedAsReviewer.checked,
     };
 
+    setIsLoading(true);
     const success = await signUp(userForm);
+    setIsLoading(false);
     if (success) {
       navigate("/app");
     }
@@ -214,7 +218,14 @@ const SignupPage = () => {
                   onClick={handleSubmit}
                   className="text-white bg-accent hover:opacity-95 focus:ring-4 focus:outline-none  focus:ring-accent-300 font-medium rounded-lg text-sm w-full px-5 py-4 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                 >
-                  Sign up
+                  {isLoading ? (
+                    <>
+                      <SpinnerIcon />
+                      Signing In...
+                    </>
+                  ) : (
+                    "Sign up"
+                  )}
                 </button>
               </form>
               <div>
