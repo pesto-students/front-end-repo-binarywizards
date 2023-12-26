@@ -13,6 +13,7 @@ import {
 
 const useAuth = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -26,6 +27,7 @@ const useAuth = () => {
     // TODO validate the token, check for expiry, etc.
     const isValid = isAccessTokenValid();
     if (!isValid) {
+      setUserData(null);
       handleExpiry();
     }
     if (isValid) {
@@ -43,6 +45,7 @@ const useAuth = () => {
       setAccessToken(accessToken);
       setRefreshToken("");
       setIsAuthenticated(true);
+      setUserData(response.data.userData);
       return true;
     }
     toast.error(response.msg, {
@@ -59,6 +62,7 @@ const useAuth = () => {
       setAccessToken(accessToken);
       setRefreshToken("");
       setIsAuthenticated(true);
+      setUserData(response.data.userData);
       return true;
     }
     toast.error(response.msg, {
@@ -73,6 +77,7 @@ const useAuth = () => {
     setAccessToken("");
     setRefreshToken("");
     setIsAuthenticated(false);
+    setUserData(null);
     navigate("/login");
   };
 
@@ -111,6 +116,7 @@ const useAuth = () => {
 
   return {
     isAuthenticated,
+    userData,
     loading,
     authorize,
     logout,

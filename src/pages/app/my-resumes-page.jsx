@@ -1,15 +1,22 @@
 import { useNavigate } from "react-router-dom";
-import resume1 from "src/assets/templates/resume-1.png";
-import resume2 from "src/assets/templates/resume-2.png";
-import resume3 from "src/assets/templates/resume-3.png";
-import resume4 from "src/assets/templates/resume-4.png";
-import resume5 from "src/assets/templates/resume-5.png";
-import resume6 from "src/assets/templates/resume-6.png";
-
-const resumes = [resume1, resume2, resume3, resume4, resume5, resume6];
+import { useQuery } from "@tanstack/react-query";
+import { getAllResumes } from "src/api-service/resume/resume-service";
 
 const MyResumes = () => {
   const navigate = useNavigate();
+
+  // Query for fetching all user Resume
+  const fetchUserResume = async () => {
+    const response = await getAllResumes();
+    if (!response.status) {
+      throw new Error(response.msg);
+    }
+    return response.data;
+  };
+
+  const { error: errorData, data: resumeData } = useQuery({
+    queryFn: fetchUserResume,
+  });
 
   const updateResume = (templateId, resumeId) => {
     templateId = templateId || "658421f96582459b0a2a6f09";
@@ -17,24 +24,37 @@ const MyResumes = () => {
     const action = "update";
     navigate(`/app/build-resume/${action}/${templateId}/${resumeId}`);
   };
+
+  console.log(resumeData);
   return (
     <div className="h-full flex flex-col px-10 py-8">
       <h1 className="text-2xl text-gray-900 font-bold">My Resumes</h1>
       <div data-section="templates-grid" className="w-full">
         <div className="grid grid-cols-[repeat(auto-fill,_minmax(200px,220px))]  gap-8 mt-8 ">
-          {resumes.map((resume, index) => {
-            return (
-              <div
-                key={`resume-template-${index}`}
-                className="w-[200px] cursor-pointer"
-                onClick={() => {
-                  updateResume();
-                }}
-              >
-                <img src={resume} alt="Resume template" />
-              </div>
-            );
-          })}
+          {resumeData?.length > 0 ? (
+            resumeData.map((resume, index) => {
+              return (
+                <div
+                  key={`resume-template-${index}`}
+                  className="w-[200px] cursor-pointer bg-white p-4 border-4 border-gray-500"
+                  onClick={() => {
+                    updateResume(resume.templateId, resume.id);
+                  }}
+                >
+                  <img
+                    src={resume}
+                    alt="Resume template"
+                    className="w-full h-auto"
+                    onError="this.onerror=null; this.src='empty-photo-url'"
+                  />
+                </div>
+              );
+            })
+          ) : (
+            <div className="watermark">
+              You don't have any, Create Your First Perfect Resume With Us!!
+            </div>
+          )}
         </div>
       </div>
     </div>
