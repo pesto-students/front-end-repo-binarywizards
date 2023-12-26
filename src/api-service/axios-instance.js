@@ -30,10 +30,16 @@ instance.interceptors.request.use(
   (error) => Promise.reject(error),
 );
 
+let logout = null;
+export const setUnauthorizedHandler = (handler) => {
+  logout = handler;
+};
+
 instance.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
+    console.log("interceptor: ", !!originalRequest._retry);
     // If the error status is 401 and there is no originalRequest._retry flag,
     // it means the token has expired and we need to refresh it
     if (
@@ -43,11 +49,15 @@ instance.interceptors.response.use(
     ) {
       originalRequest._retry = true;
       try {
-        refreshToken();
+        const response = await refreshToken();
+        if (response.status === 401) {
+          // This is not a good way to handle unauthorization.
+          return logout();
+        }
         const accessToken = getAccessToken();
         // Retry the original request with the new token
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-        return axios(originalRequest);
+        return instance(originalRequest);
       } catch (error) {
         console.log(error);
         return Promise.reject({ status: 401, action: "logout" });
@@ -66,13 +76,11 @@ const refreshToken = async () => {
     const { accessToken } = response.data;
     setAccessToken(accessToken);
     setRefreshToken("");
-    return true;
+    return { status: 200 };
   } catch (error) {
-    return Promise.reject({ status: 401, action: "logout" });
+    return { status: 401, action: "logout" };
   }
 };
-
-// const successCodes = [200, 201, 202, 203, 204, 205];
 
 const resolveError = (error) => {
   if (error.response) {

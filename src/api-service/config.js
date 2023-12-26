@@ -8,6 +8,7 @@ const api = {
   auth: {
     login: routeMap("/auth/login"),
     signUp: routeMap("/auth/signup"),
+    logout: routeMap("/auth/logout"),
   },
   user: {
     profile: routeMap("/users"),

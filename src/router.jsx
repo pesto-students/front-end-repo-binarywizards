@@ -90,6 +90,10 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
+        element: <Navigate to="./my-resumes" replace />,
+      },
+      {
+        path: "my-resumes",
         element: (
           <PrivateRoute>
             <MyResumes />

@@ -4,7 +4,10 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { apiService } from "src/api-service/api-service";
-import { refreshToken } from "src/api-service/axios-instance";
+import {
+  refreshToken,
+  setUnauthorizedHandler,
+} from "src/api-service/axios-instance";
 import {
   getAccessToken,
   setAccessToken,
@@ -83,14 +86,24 @@ const useAuth = () => {
     return false;
   };
 
-  const logout = () => {
+  const logout = async () => {
     // Clear the session/token
-    setAccessToken("");
-    setRefreshToken("");
-    setIsAuthenticated(false);
-    setUserData(null);
-    navigate("/login");
+    const response = await apiService.logout();
+    if (response && response.status) {
+      setAccessToken("");
+      setRefreshToken("");
+      setIsAuthenticated(false);
+      setUserData(null);
+      navigate("/login", { replace: true });
+      return true;
+    }
+    toast.error(response.msg, {
+      position: toast.POSITION.TOP_CENTER,
+    });
+
+    return false;
   };
+  setUnauthorizedHandler(logout);
 
   const handleExpiry = async () => {
     try {

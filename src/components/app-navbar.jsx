@@ -1,6 +1,6 @@
 import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, Link } from "react-router-dom";
 import { apiService } from "src/api-service/api-service";
 import { useQuery } from "@tanstack/react-query";
 import { setUserInfo } from "src/store/userSlice";
@@ -46,14 +46,14 @@ const AppNavbar = () => {
   return (
     <nav className="bg-primary sticky top-0 w-full z-20  start-0">
       <div className="flex flex-wrap items-center justify-between mx-auto px-10 py-4">
-        <a
-          to={"/app"}
-          className="flex items-center font-semibold text-white focus:outline-accent dark:text-white space-x-3 rtl:space-x-reverse"
+        <Link
+          to={"/app/my-resumes"}
+          className="flex items-center font-semibold text-white focus:outline-accent dark:text-white space-x-3 rtl:space-x-reverse cursor-pointer"
         >
           <span className="self-center text-2xl font-semibold whitespace-nowrap">
             PerfectResume.ai
           </span>
-        </a>
+        </Link>
         <div
           className="flex items-center lg:order-2 space-x-3 lg:space-x-0 rtl:space-x-reverse cursor-pointer"
           id="dropdownHoverUserProfile"
@@ -103,7 +103,7 @@ const AppNavbar = () => {
           <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-4 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-transparent dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700 text-lg ">
             <li>
               <NavLink
-                to={"/app"}
+                to={"my-resumes"}
                 end
                 className={({ isActive }) =>
                   `${

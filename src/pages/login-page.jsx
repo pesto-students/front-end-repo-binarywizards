@@ -75,7 +75,8 @@ const LoginPage = () => {
     const success = await authorize(credentials);
     setIsLoading(false);
     if (success) {
-      navigate("/app");
+      const path = redirect ? redirect : "/app";
+      navigate(path);
     }
   };
 

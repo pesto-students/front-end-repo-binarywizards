@@ -10,6 +10,10 @@ const signUp = async (userData) => {
   const response = await axiosService.post(api.auth.signUp, userData);
   return response;
 };
+const logout = async () => {
+  const response = await axiosService.post(api.auth.logout);
+  return response;
+};
 const user = async (params) => {
   const response = await axiosService.get(api.user.profile, params);
   return response;
@@ -17,6 +21,7 @@ const user = async (params) => {
 
 const apiService = {
   login,
+  logout,
   signUp,
   user,
 };

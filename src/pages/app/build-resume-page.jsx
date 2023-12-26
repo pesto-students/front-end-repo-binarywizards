@@ -11,7 +11,7 @@ import GearIcon from "src/assets/icons/gear.svg?react";
 import DownloadIcon from "src/assets/icons/download.svg?react";
 import ShareIcon from "src/assets/icons/share.svg?react";
 import TimesIcon from "src/assets/icons/times.svg?react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import CreateResumeForm from "src/components/create-resume-form";
@@ -34,6 +34,7 @@ const BuildResume = () => {
   const [section, setSection] = useState("");
   const [openCreateResumeForm, setOpenCreateResumeForm] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const isUpdateMode = action === "update" && !!resumeId;
 
@@ -41,7 +42,7 @@ const BuildResume = () => {
   const fetchTemplate = async () => {
     const response = await getTemplate(templateId);
     if (!response.status) {
-      throw new Error(response.msg);
+      throw new Error(JSON.stringify(response));
     }
     return response.data;
   };
@@ -50,7 +51,7 @@ const BuildResume = () => {
   const fetchResume = async () => {
     const response = await getResume(resumeId);
     if (!response.status) {
-      throw new Error(response.msg);
+      throw new Error(JSON.stringify(response));
     }
     return response.data;
   };
@@ -64,6 +65,7 @@ const BuildResume = () => {
     queryKey: ["template", templateId],
     queryFn: fetchTemplate,
     enabled: !!templateId, // Ensure templateId is not null or undefined
+    retry: 2,
   });
 
   // React Query for resume
@@ -77,6 +79,7 @@ const BuildResume = () => {
     enabled: isUpdateMode, // Only enabled if action is 'update' and resumeId is present
   });
   const isLoading = isTemplateLoading || isResumeLoading;
+  const hasError = templateError || (action === "update" && resumeError);
 
   const updateMetaData = (newMetaData) => {
     const updatedMetaData = { ...metaData, ...newMetaData };
@@ -86,9 +89,9 @@ const BuildResume = () => {
 
   const resetMetaData = () => {
     if (isUpdateMode) {
-      setMetaData(resume.metaData);
+      updateMetaData(resume.metaData);
     } else {
-      setMetaData(template.metaData);
+      updateMetaData(template.metaData);
     }
   };
 
@@ -148,7 +151,24 @@ const BuildResume = () => {
     }
   }, [templateData]);
 
-  if (templateError || (action === "update" && resumeError)) {
+  useEffect(() => {
+    if (hasError) {
+      const error = templateError || resumeError;
+      const errorObj = JSON.parse(error.message);
+      if (errorObj && errorObj.data && errorObj.data.statusCode === 404) {
+        const message = isUpdateMode
+          ? "Resume Not Found"
+          : "Template Not Found";
+        toast.error(message, {
+          position: toast.POSITION.TOP_CENTER,
+        });
+        const path = isUpdateMode ? "/app" : "/app/build-resume";
+        return navigate(path, { replace: true });
+      }
+    }
+  }, [templateError, resumeError]);
+
+  if (hasError) {
     return (
       <div>
         <FetchError />
