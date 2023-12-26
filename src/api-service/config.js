@@ -14,12 +14,13 @@ const api = {
   },
   templates: {
     get: routeMap("/templates"),
+    getAll: routeMap("/templates"),
   },
   resume: {
     create: routeMap("/resumes"),
     update: routeMap("/resumes"),
     get: routeMap("/resumes"),
-    getAll: routeMap("/resumes"),
+    getAll: routeMap("/resumes/user/all"),
   },
 };
 

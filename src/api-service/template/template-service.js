@@ -5,5 +5,9 @@ const getTemplate = async (params) => {
   const response = await axiosService.get(api.templates.get, params);
   return response;
 };
+const getAllTemplates = async () => {
+  const response = await axiosService.get(api.templates.getAll);
+  return response;
+};
 
-export { getTemplate };
+export { getTemplate, getAllTemplates };

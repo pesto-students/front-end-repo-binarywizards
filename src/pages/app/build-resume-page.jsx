@@ -17,6 +17,8 @@ import { useEffect } from "react";
 import CreateResumeForm from "src/components/create-resume-form";
 import { getResume, updateResume } from "src/api-service/resume/resume-service";
 import { getTemplate } from "src/api-service/template/template-service";
+import { htmlToBlob } from "src/utils/htmlToBlob";
+import { toast } from "react-toastify";
 
 const BuildResume = () => {
   const { action, templateId, resumeId } = useParams();
@@ -100,8 +102,30 @@ const BuildResume = () => {
     if (!isUpdateMode) {
       setOpenCreateResumeForm(true);
     } else {
-      updateResume(resume.id, { metaData: finalMetaData });
+      handleUpdateResume();
     }
+  };
+
+  const handleUpdateResume = async () => {
+    const node = document.getElementById("resume-root");
+    node.style["width"] = "595px";
+    node.style["height"] = "842px";
+
+    const resumeBlob = await htmlToBlob(node);
+    const payload = new FormData();
+    payload.append("files", resumeBlob, resume.name);
+    payload.append("data", JSON.stringify({ metaData: finalMetaData }));
+    const response = await updateResume(resume.id, payload);
+    if (response.status) {
+      toast.success(response.msg || "Resume updation success", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    } else {
+      toast.error(response.msg, {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    }
+    console.log(response);
   };
 
   useEffect(() => {

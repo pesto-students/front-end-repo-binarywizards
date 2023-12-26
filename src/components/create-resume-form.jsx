@@ -1,15 +1,20 @@
 import { Modal } from "flowbite-react";
+import { toast } from "react-toastify";
 import PropTypes from "prop-types";
 import { useRef } from "react";
 import { useSelector } from "react-redux";
 import { createResume } from "src/api-service/resume/resume-service";
 import { formValidator } from "src/utils/form-validator";
+import { htmlToBlob } from "src/utils/htmlToBlob";
+import { useNavigate } from "react-router-dom";
 
 function CreateResumeForm({ openModal, setOpenModal }) {
   const { template, resume, metaData } = useSelector(
     (state) => state.builderState,
   );
   const formRef = useRef();
+  const navigate = useNavigate();
+
   const handleCreateResume = async () => {
     const formData = formRef.current;
     const validations = {
@@ -21,19 +26,42 @@ function CreateResumeForm({ openModal, setOpenModal }) {
     let isValid = formValidator(formData, validations);
     if (!isValid) return;
     const { name, isPrivate } = formData;
-    const payload = {
+    const jsonData = {
       ...resume,
       metaData,
       templateId: template.id,
       name: name.value,
       isPrivate: isPrivate.checked,
     };
-    console.log(payload);
+
+    const node = document.getElementById("resume-root");
+    node.style["width"] = "595px";
+    node.style["height"] = "842px";
+
+    const resumeBlob = await htmlToBlob(node);
+    const payload = new FormData();
+    payload.append("files", resumeBlob, name.value);
+    payload.append("data", JSON.stringify(jsonData));
+
     const response = await createResume(payload);
     if (response.status) {
       setOpenModal(false);
+      toast.success(response.msg || "Resume creation success", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+      const { templateId, id } = response.data;
+      redirectToUpdateResume(templateId, id);
+    } else {
+      toast.error(response.msg, {
+        position: toast.POSITION.TOP_CENTER,
+      });
     }
     console.log(response);
+  };
+
+  const redirectToUpdateResume = (templateId, resumeId) => {
+    const action = "update";
+    navigate(`/app/build-resume/${action}/${templateId}/${resumeId}`);
   };
   return (
     <>
