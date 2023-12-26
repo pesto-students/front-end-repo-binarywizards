@@ -39,6 +39,20 @@ function isElement(value) {
 function isNodeList(value) {
   return isType(value, "NodeList");
 }
+
+function getUsernameAbbreviation(username) {
+  // Split the username into words based on spaces
+  const words = username.trim().split(/\s+/);
+
+  // Check the number of words in the username
+  if (words.length > 1) {
+    // Return the first letter of the first two words
+    return words[0][0] + words[1][0];
+  } else {
+    // Return the first two letters of the username
+    return username.substring(0, 2);
+  }
+}
 export {
   debounce,
   arrayFrom,
@@ -49,4 +63,5 @@ export {
   isType,
   isElement,
   isNodeList,
+  getUsernameAbbreviation,
 };

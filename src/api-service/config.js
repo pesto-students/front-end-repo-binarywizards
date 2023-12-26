@@ -10,7 +10,7 @@ const api = {
     signUp: routeMap("/auth/signup"),
   },
   user: {
-    profile: routeMap("/user"),
+    profile: routeMap("/users"),
   },
   templates: {
     get: routeMap("/templates"),

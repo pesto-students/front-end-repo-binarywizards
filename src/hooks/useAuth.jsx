@@ -10,12 +10,15 @@ import {
   setAccessToken,
   setRefreshToken,
 } from "src/utils/auth";
+import { useDispatch } from "react-redux";
+import { setUserInfo } from "src/store/userSlice";
 
 const useAuth = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     // check for existing session/token
@@ -35,6 +38,14 @@ const useAuth = () => {
       setLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    if (userData) {
+      dispatch(setUserInfo({ user: userData }));
+    } else {
+      dispatch(setUserInfo({ user: {} }));
+    }
+  }, [userData]);
 
   const authorize = async (credentials) => {
     // Perform the login logic, probably an API call
