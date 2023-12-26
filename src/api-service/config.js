@@ -1,8 +1,7 @@
 const prefix = "api/v1";
-const domain = 'http://localhost:3000/';
 
 function routeMap(path) {
-  return `${domain}${prefix}${path}`;
+  return `${prefix}${path}`;
 }
 
 const api = {
