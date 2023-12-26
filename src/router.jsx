@@ -16,12 +16,22 @@ import BuildResume from "./pages/app/build-resume-page";
 import ReviewSystem from "./pages/app/review-system-page";
 import CreateTemplate from "./pages/app/create-template";
 import TemplatesPage from "./pages/app/templates-page";
+import ErrorPage from "./pages/error-page";
+import UserProfilePage from "./pages/app/user-profile-page";
+import Skeleton from "react-loading-skeleton";
 
 const PublicRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="w-full h-screen relative">
+        <div className="z-10 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+          <h1 className="text-3xl text-gray-800 font-semibold">Loading...</h1>
+        </div>
+        <Skeleton className="w-full h-screen" baseColor="#e5e7eb" />
+      </div>
+    );
   }
   return !isAuthenticated ? children : <Navigate to="/app" replace />;
 };
@@ -30,7 +40,14 @@ const PrivateRoute = ({ children }) => {
   const location = useLocation();
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="w-full h-screen relative">
+        <div className="z-10 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+          <h1 className="text-3xl text-gray-800 font-semibold">Loading...</h1>
+        </div>
+        <Skeleton className="w-full h-screen" baseColor="#e5e7eb" />
+      </div>
+    );
   }
   return isAuthenticated ? (
     children
@@ -61,6 +78,7 @@ const router = createBrowserRouter([
         <HomePage />
       </PublicRoute>
     ),
+    errorElement: <ErrorPage />,
   },
   {
     path: "/app",
@@ -75,6 +93,14 @@ const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <MyResumes />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "user-profile",
+        element: (
+          <PrivateRoute>
+            <UserProfilePage />
           </PrivateRoute>
         ),
       },

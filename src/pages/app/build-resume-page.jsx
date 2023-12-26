@@ -19,6 +19,9 @@ import { getResume, updateResume } from "src/api-service/resume/resume-service";
 import { getTemplate } from "src/api-service/template/template-service";
 import { htmlToBlob } from "src/utils/htmlToBlob";
 import { toast } from "react-toastify";
+import Skeleton from "react-loading-skeleton";
+import FetchError from "src/components/fetch-error";
+import Tippy from "@tippyjs/react";
 
 const BuildResume = () => {
   const { action, templateId, resumeId } = useParams();
@@ -73,6 +76,7 @@ const BuildResume = () => {
     queryFn: fetchResume,
     enabled: isUpdateMode, // Only enabled if action is 'update' and resumeId is present
   });
+  const isLoading = isTemplateLoading || isResumeLoading;
 
   const updateMetaData = (newMetaData) => {
     const updatedMetaData = { ...metaData, ...newMetaData };
@@ -144,13 +148,12 @@ const BuildResume = () => {
     }
   }, [templateData]);
 
-  // Conditional rendering or further logic
-  if (isTemplateLoading || isResumeLoading) {
-    return <div>Loading...</div>;
-  }
-
   if (templateError || (action === "update" && resumeError)) {
-    return <div>Error fetching data...</div>;
+    return (
+      <div>
+        <FetchError />
+      </div>
+    );
   }
 
   return (
@@ -171,15 +174,21 @@ const BuildResume = () => {
                 </h1>
               </div>
               <div>
-                <button
-                  type="button"
-                  className="px-3 py-2 text-xs font-medium text-center inline-flex items-center text-white bg-accent rounded-lg hover:bg-accent-900 focus:ring-4 focus:outline-none focus:ring-accent-300"
-                >
-                  <span className="me-2">
-                    <GearIcon />
-                  </span>
-                  Configure
-                </button>
+                {isLoading ? (
+                  <div>
+                    <Skeleton width={110} height={36} />
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    className="px-3 py-2 text-xs font-medium text-center inline-flex items-center text-white bg-accent rounded-lg hover:bg-accent-900 focus:ring-4 focus:outline-none focus:ring-accent-300"
+                  >
+                    <span className="me-2">
+                      <GearIcon />
+                    </span>
+                    Configure
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -225,43 +234,61 @@ const BuildResume = () => {
                   Template View
                 </h1>
               </div>
-              <div className="flex items-center">
-                <button
-                  type="button"
-                  className="px-3 py-1.5 ml-2 text-xs font-semibold text-center uppercase inline-flex items-center text-gray-800 bg-white rounded-md border-2 border-gray-300  hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-accent-300"
-                  onClick={() => resetMetaData()}
-                >
-                  Reset
-                </button>
-                <button
-                  type="button"
-                  className="px-3 py-1.5 ml-2 text-xs font-semibold text-center uppercase inline-flex items-center text-white bg-accent rounded-md border-2 border-accent  hover:bg-accent-900 hover:border-accent-900 focus:ring-4 focus:outline-none focus:ring-accent-300"
-                  onClick={() => onSaveResume()}
-                >
-                  {isUpdateMode ? "Update" : "Save"}
-                </button>
-                <button
-                  type="button"
-                  className="px-1.5 py-1.5 ml-2 text-xs font-medium text-center inline-flex items-center text-white bg-accent rounded-md hover:bg-accent-900 focus:ring-4 focus:outline-none focus:ring-accent-300"
-                >
-                  <DownloadIcon />
-                </button>
-
-                <button
-                  type="button"
-                  className="px-1.5 py-1.5 ml-2 text-xs font-medium text-center inline-flex items-center text-white bg-accent rounded-md hover:bg-accent-900 focus:ring-4 focus:outline-none focus:ring-accent-300"
-                >
-                  <ShareIcon />
-                </button>
-              </div>
+              {isLoading ? (
+                <div>
+                  <Skeleton width={200} height={32} />
+                </div>
+              ) : (
+                <div className="flex items-center">
+                  <button
+                    type="button"
+                    className="px-3 py-1.5 ml-2 text-xs font-semibold text-center uppercase inline-flex items-center text-gray-800 bg-white rounded-md border-2 border-gray-300  hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-accent-300"
+                    onClick={() => resetMetaData()}
+                  >
+                    Reset
+                  </button>
+                  <button
+                    type="button"
+                    className="px-3 py-1.5 ml-2 text-xs font-semibold text-center uppercase inline-flex items-center text-white bg-accent rounded-md border-2 border-accent  hover:bg-accent-900 hover:border-accent-900 focus:ring-4 focus:outline-none focus:ring-accent-300"
+                    onClick={() => onSaveResume()}
+                  >
+                    {isUpdateMode ? "Update" : "Save"}
+                  </button>
+                  <Tippy content="Download Resume">
+                    <button
+                      type="button"
+                      className="px-1.5 py-1.5 ml-2 text-xs font-medium text-center inline-flex items-center text-white bg-accent rounded-md hover:bg-accent-900 focus:ring-4 focus:outline-none focus:ring-accent-300"
+                    >
+                      <DownloadIcon />
+                    </button>
+                  </Tippy>
+                  <Tippy content="Share your Resume">
+                    <button
+                      type="button"
+                      className="px-1.5 py-1.5 ml-2 text-xs font-medium text-center inline-flex items-center text-white bg-accent rounded-md hover:bg-accent-900 focus:ring-4 focus:outline-none focus:ring-accent-300"
+                    >
+                      <ShareIcon />
+                    </button>
+                  </Tippy>
+                </div>
+              )}
             </div>
           </div>
           <div className=" w-full shadow-[0_6px_15px_#00000029] p-1 rounded border-t border-solid border-[#f3f3f3]">
-            <Template
-              json={templateData.template}
-              data={metaData}
-              onSelectedSection={onSelectedSection}
-            />
+            {isLoading ? (
+              <div>
+                <Skeleton
+                  className="w-[350px] lg:w-[400px] xl:w-[592px]"
+                  height={840}
+                />
+              </div>
+            ) : (
+              <Template
+                json={templateData.template}
+                data={metaData}
+                onSelectedSection={onSelectedSection}
+              />
+            )}
           </div>
         </div>
       </div>

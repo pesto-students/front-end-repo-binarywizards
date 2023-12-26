@@ -5,6 +5,7 @@ import {
   setAccessToken,
   setRefreshToken,
 } from "src/utils/auth";
+import { isArray } from "src/utils/utils";
 
 const isProduction = import.meta.env.PROD;
 const prod = "https://perfectresume-ai.onrender.com";
@@ -15,7 +16,7 @@ const backend = isProduction ? prod : dev;
 const instance = axios.create({
   baseURL: backend,
   withCredentials: true,
-  timeout: 2000,
+  timeout: 3000,
 });
 
 instance.interceptors.request.use(
@@ -81,9 +82,10 @@ const resolveError = (error) => {
     console.log(error.response.status);
     console.log(error.response.headers);
     const response = error.response;
+    const message = response.data.message;
     return {
       status: false,
-      msg: response.data.message,
+      msg: isArray(message) ? message[0] : message,
       data: response.data,
     };
   } else if (error.request) {
