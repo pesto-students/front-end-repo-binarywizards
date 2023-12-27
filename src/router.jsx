@@ -19,6 +19,7 @@ import TemplatesPage from "./pages/app/templates-page";
 import ErrorPage from "./pages/error-page";
 import UserProfilePage from "./pages/app/user-profile-page";
 import Skeleton from "react-loading-skeleton";
+import ResetPasswordPage from "./pages/reset-password-page";
 
 const PublicRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
@@ -163,6 +164,14 @@ const router = createBrowserRouter([
     element: (
       <PublicRoute>
         <ForgotPasswordPage />
+      </PublicRoute>
+    ),
+  },
+  {
+    path: "/reset-password/:token",
+    element: (
+      <PublicRoute>
+        <ResetPasswordPage />
       </PublicRoute>
     ),
   },

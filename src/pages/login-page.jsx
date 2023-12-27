@@ -201,13 +201,18 @@ const LoginPage = () => {
                 </div>
                 <button
                   type="submit"
-                  className="text-white bg-accent hover:opacity-95 focus:ring-4 focus:outline-none  focus:ring-accent-300 font-medium rounded-lg text-sm w-full px-5 py-4 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  disabled={isLoading ? true : false}
+                  className={`${
+                    isLoading
+                      ? "bg-accent-800 cursor-not-allowed"
+                      : "bg-accent cursor-pointer"
+                  } text-white hover:opacity-95 focus:ring-4 focus:outline-none  focus:ring-accent-300 font-medium rounded-lg text-sm w-full px-5 py-4 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
                   onClick={handleSubmit}
                 >
                   {isLoading ? (
                     <>
                       <SpinnerIcon />
-                      Connecting...
+                      <span>Connecting...</span>
                     </>
                   ) : (
                     "Login"

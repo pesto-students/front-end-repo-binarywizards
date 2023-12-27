@@ -93,6 +93,7 @@ const BuildResume = () => {
     } else {
       updateMetaData(template.metaData);
     }
+    onSelectedSection("");
   };
 
   const onChange = (newMetaData) => {

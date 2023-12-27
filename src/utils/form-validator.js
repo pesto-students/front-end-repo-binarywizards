@@ -3,7 +3,7 @@ import Ajv from "ajv";
 import addFormats from "ajv-formats";
 import addErrors from "ajv-errors";
 
-const ajv = new Ajv({ allErrors: true });
+const ajv = new Ajv({ allErrors: true, $data: true });
 addFormats(ajv);
 addErrors(ajv);
 
@@ -48,6 +48,7 @@ const priority = {
   required: 1,
   minLength: 2,
   format: 3,
+  const: 4,
   // ... add other priorities as needed
 };
 
@@ -64,6 +65,7 @@ const parseErrors = (errors, customPriority) => {
     const priorityB = errorPriority[b.keyword] || Number.MAX_VALUE; // default to lowest priority if not found
     return priorityA - priorityB;
   });
+  console.log("sorted: ", sortedErrors);
   // Construct the error map with priority, only keeping the highest priority error for each field
   const errorMap = {};
   for (const error of sortedErrors) {

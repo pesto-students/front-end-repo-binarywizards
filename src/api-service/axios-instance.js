@@ -16,7 +16,7 @@ const backend = isProduction ? prod : dev;
 const instance = axios.create({
   baseURL: backend,
   withCredentials: true,
-  timeout: 3000,
+  timeout: 1000 * 10,
 });
 
 instance.interceptors.request.use(
@@ -118,7 +118,10 @@ const resolveError = (error) => {
 };
 
 const axiosService = {
-  post: async (endpoint, payload) => {
+  post: async (endpoint, payload, params) => {
+    if (params) {
+      endpoint = `${endpoint}/${params}`;
+    }
     return instance
       .post(endpoint, payload)
       .then(function (response) {
