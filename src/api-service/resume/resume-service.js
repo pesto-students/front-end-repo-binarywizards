@@ -23,4 +23,9 @@ const getAllResumes = async () => {
   return response;
 };
 
-export { createResume, updateResume, getResume, getAllResumes };
+const generatePdf = async ({ data, id }) => {
+  const response = await axiosService.getPDF(api.resume.generatePdf, data, id);
+  return response;
+};
+
+export { createResume, updateResume, getResume, getAllResumes, generatePdf };
