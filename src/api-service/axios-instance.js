@@ -193,6 +193,20 @@ const axiosService = {
         return resolveError(error);
       });
   },
+  getPDF: async (endpoint, payload, params) => {
+    if (params) {
+      endpoint = `${endpoint}/${params}`;
+    }
+    if (!payload) payload = {};
+    return instance
+      .post(endpoint, payload, { responseType: "blob" })
+      .then(function (response) {
+        return { status: true, data: response.data };
+      })
+      .catch(function (error) {
+        return resolveError(error);
+      });
+  },
 };
 
 export { axiosService, refreshToken };

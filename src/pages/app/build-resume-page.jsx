@@ -15,7 +15,11 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import CreateResumeForm from "src/components/create-resume-form";
-import { getResume, updateResume } from "src/api-service/resume/resume-service";
+import {
+  generatePdf,
+  getResume,
+  updateResume,
+} from "src/api-service/resume/resume-service";
 import { getTemplate } from "src/api-service/template/template-service";
 import { htmlToBlob } from "src/utils/htmlToBlob";
 import { toast } from "react-toastify";
@@ -134,6 +138,27 @@ const BuildResume = () => {
       });
     }
     console.log(response);
+  };
+
+  const downloadResume = async () => {
+    let payload = {};
+    if (resumeId) {
+      payload["id"] = resumeId;
+    } else {
+      payload["data"] = { template: templateData.template, metaData: metaData };
+    }
+    const response = await generatePdf(payload);
+    if (response.status) {
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      document.body.appendChild(a);
+      a.style = "display: none";
+      a.href = url;
+      a.download = resumeData.name + ".pdf" || "resume.pdf";
+      a.click();
+      window.URL.revokeObjectURL(url);
+    }
   };
 
   useEffect(() => {
@@ -279,6 +304,7 @@ const BuildResume = () => {
                     <button
                       type="button"
                       className="px-1.5 py-1.5 ml-2 text-xs font-medium text-center inline-flex items-center text-white bg-accent rounded-md hover:bg-accent-900 focus:ring-4 focus:outline-none focus:ring-accent-300"
+                      onClick={() => downloadResume()}
                     >
                       <DownloadIcon />
                     </button>
