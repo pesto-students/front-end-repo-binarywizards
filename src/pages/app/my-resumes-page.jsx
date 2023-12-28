@@ -33,7 +33,7 @@ const MyResumes = () => {
   };
 
   const createResume = () => {
-    navigate("./build-resume");
+    navigate("../build-resume");
   };
 
   if (error) {
