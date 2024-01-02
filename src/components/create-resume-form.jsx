@@ -77,7 +77,7 @@ function CreateResumeForm({ openModal, setOpenModal }) {
                 Resume Name
               </label>
               <input
-                type="name"
+                type="text"
                 id="name"
                 className="peer bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  focus:border-blue-500 focus-visible:outline-blue-500 block w-full  p-2.5 "
                 placeholder="e.g Software Resume"
