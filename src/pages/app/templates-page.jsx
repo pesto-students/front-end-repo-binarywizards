@@ -56,7 +56,11 @@ const TemplatesPage = () => {
                       createResume(template.id);
                     }}
                   >
-                    <img src={template.thumbnail} alt="Resume template" />
+                    <img
+                      src={template.thumbnail}
+                      alt="Resume template"
+                      className="h-[280px]"
+                    />
                   </div>
                 );
               })}

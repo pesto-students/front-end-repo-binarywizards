@@ -64,7 +64,11 @@ const MyResumes = () => {
                     }}
                   >
                     <div className="mb-2 cursor-pointer border border-gray-300 border-solid">
-                      <img src={resume.thumbnail} alt="Resume" />
+                      <img
+                        src={resume.thumbnail}
+                        alt="Resume"
+                        className="h-[280px]"
+                      />
                     </div>
                     <div>
                       <h5 className="text-base font-medium capitalize">
