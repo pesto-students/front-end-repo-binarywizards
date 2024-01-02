@@ -24,7 +24,7 @@ const api = {
     update: routeMap("/resumes"),
     get: routeMap("/resumes"),
     getAll: routeMap("/resumes/user/all"),
-    generatePdf: routeMap("/templates/generate-pdf"),
+    generatePdf: routeMap("/template/generate-pdf"),
   },
 };
 
