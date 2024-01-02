@@ -8,7 +8,7 @@ import {
 import { isArray } from "src/utils/utils";
 
 const isProduction = import.meta.env.PROD;
-const prod = "https://perfectresume-ai.onrender.com";
+const prod = "https://perfectresume-ai-4zbw.onrender.com";
 const dev = "http://localhost:3000";
 
 const backend = isProduction ? prod : dev;
