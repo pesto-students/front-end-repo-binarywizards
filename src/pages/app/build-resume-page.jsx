@@ -8,6 +8,7 @@ import {
   updateResumeMetaData,
 } from "src/store/builderSlice";
 import GearIcon from "src/assets/icons/gear.svg?react";
+import StarsIcon from "src/assets/icons/stars.svg?react";
 import DownloadIcon from "src/assets/icons/download.svg?react";
 import ShareIcon from "src/assets/icons/share.svg?react";
 import TimesIcon from "src/assets/icons/times.svg?react";
@@ -26,6 +27,7 @@ import { toast } from "react-toastify";
 import Skeleton from "react-loading-skeleton";
 import FetchError from "src/components/fetch-error";
 import Tippy from "@tippyjs/react";
+import OpenAiConfigForm from "src/components/form/openai-config-form";
 
 const BuildResume = () => {
   const { action, templateId, resumeId } = useParams();
@@ -37,6 +39,7 @@ const BuildResume = () => {
   const [metaData, setMetaData] = useState({});
   const [section, setSection] = useState("");
   const [openCreateResumeForm, setOpenCreateResumeForm] = useState(false);
+  const [openAiConfigForm, setOpenAiConfigForm] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -223,19 +226,34 @@ const BuildResume = () => {
                 {isLoading ? (
                   <div>
                     <Skeleton width={110} height={36} />
+                    <Skeleton width={80} height={36} className="ml-2" />
                   </div>
                 ) : (
-                  <button
-                    type="button"
-                    className="px-3 py-2 text-xs font-medium text-center inline-flex items-center text-white bg-accent rounded-lg hover:bg-accent-900 focus:ring-4 focus:outline-none focus:ring-accent-300"
-                  >
-                    <span className="me-2">
-                      <GearIcon />
-                    </span>
-                    Configure
-                  </button>
+                  <div className="flex items-center justify-center">
+                    <button
+                      type="button"
+                      className="px-3 py-2 text-xs font-medium text-center inline-flex items-center text-white bg-accent rounded-lg hover:bg-accent-900 focus:ring-4 focus:outline-none focus:ring-accent-300"
+                      onClick={() => setOpenAiConfigForm((toggle) => !toggle)}
+                    >
+                      <span className="me-2">
+                        <GearIcon />
+                      </span>
+                      Configure
+                    </button>
+                    <button
+                      type="button"
+                      className="ml-2 px-2 py-1.5 text-xs font-medium text-center inline-flex items-center text-white bg-accent rounded-lg hover:bg-accent-900 focus:ring-4 focus:outline-none focus:ring-accent-300"
+                      onClick={() => setOpenAiConfigForm((toggle) => !toggle)}
+                    >
+                      <StarsIcon className="w-6 h-6" />
+                    </button>
+                  </div>
                 )}
               </div>
+              <OpenAiConfigForm
+                openModal={openAiConfigForm}
+                setOpenModal={setOpenAiConfigForm}
+              />
             </div>
           </div>
           {section ? (
