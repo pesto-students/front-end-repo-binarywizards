@@ -68,18 +68,19 @@ instance.interceptors.response.use(
 );
 
 const refreshToken = async () => {
-  try {
-    const refreshToken = getRefreshToken();
-    const response = await axios.post("/api/refresh-token", {
-      refreshToken,
-    });
-    const { accessToken } = response.data;
-    setAccessToken(accessToken);
-    setRefreshToken("");
-    return { status: 200 };
-  } catch (error) {
-    return { status: 401, action: "logout" };
-  }
+  return { status: 401, action: "logout" };
+  // try {
+  //   const refreshToken = getRefreshToken();
+  //   const response = await axios.post("/api/refresh-token", {
+  //     refreshToken,
+  //   });
+  //   const { accessToken } = response.data;
+  //   setAccessToken(accessToken);
+  //   setRefreshToken("");
+  //   return { status: 200 };
+  // } catch (error) {
+  //   return { status: 401, action: "logout" };
+  // }
 };
 
 const resolveError = (error) => {
