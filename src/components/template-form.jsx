@@ -1,10 +1,20 @@
 import PropTypes from "prop-types";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { debounce, isArray } from "src/utils/utils";
 import TextArea from "./form/text-area";
 import InputField from "./form/input-field";
+import AiButton from "./ai-btn";
+import Loader from "./loader";
+
 const TemplateForm = ({ formSchema, data, onChange, onDelete, section }) => {
   const formRef = useRef();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const rephrase = (key, value) => {
+    console.log("key: ", key);
+    console.log("value: ", value);
+    setIsLoading(true);
+  };
 
   const onFormChange = () => {
     debounceUpdateFormData();
@@ -108,7 +118,17 @@ const TemplateForm = ({ formSchema, data, onChange, onDelete, section }) => {
           if (fieldData.type === "textarea") {
             field = (
               <div key={`${fieldData.label}-${item["order"]}`} className="mb-6">
-                <TextArea field={fieldData} data={item} order={item["order"]} />
+                <TextArea field={fieldData} data={item} order={item["order"]}>
+                  {fieldData.includeAi ? (
+                    <div className="absolute right-0 bottom-[9px]  z-50">
+                      <AiButton
+                        onClick={() =>
+                          rephrase(fieldData.key, item[fieldData.key])
+                        }
+                      />
+                    </div>
+                  ) : null}
+                </TextArea>
               </div>
             );
           }
@@ -166,7 +186,13 @@ const TemplateForm = ({ formSchema, data, onChange, onDelete, section }) => {
         if (fieldData.type === "textarea") {
           return (
             <div key={fieldData.label} className="mb-6">
-              <TextArea field={fieldData} data={data} />
+              <TextArea field={fieldData} data={data}>
+                {fieldData.includeAi ? (
+                  <div className="absolute right-0 bottom-[9px]  z-50">
+                    <AiButton onClick={(e) => rephrase(e)} />
+                  </div>
+                ) : null}
+              </TextArea>
             </div>
           );
         }
@@ -179,6 +205,7 @@ const TemplateForm = ({ formSchema, data, onChange, onDelete, section }) => {
 
   return (
     <div className="max-h-[840px] p-8 overflow-auto mb-10 custom-scrollbar">
+      <Loader openModal={isLoading} setOpenModal={setIsLoading} />
       <form onChange={onFormChange} ref={formRef}>
         {generateForm(formSchema, data)}
       </form>
@@ -192,6 +219,7 @@ TemplateForm.propTypes = {
       repeatable: PropTypes.bool,
       isBlock: PropTypes.bool,
       max: PropTypes.number,
+      includeAi: PropTypes.bool,
     }),
     schema: PropTypes.arrayOf(PropTypes.object),
   }),
