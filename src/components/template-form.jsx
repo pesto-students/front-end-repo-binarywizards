@@ -1,20 +1,13 @@
 import PropTypes from "prop-types";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { debounce, isArray } from "src/utils/utils";
 import TextArea from "./form/text-area";
 import InputField from "./form/input-field";
-import AiButton from "./ai-btn";
-import Loader from "./loader";
+
+import AiRephraseBox from "./ai-box";
 
 const TemplateForm = ({ formSchema, data, onChange, onDelete, section }) => {
   const formRef = useRef();
-  const [isLoading, setIsLoading] = useState(false);
-
-  const rephrase = (key, value) => {
-    console.log("key: ", key);
-    console.log("value: ", value);
-    setIsLoading(true);
-  };
 
   const onFormChange = () => {
     debounceUpdateFormData();
@@ -121,10 +114,9 @@ const TemplateForm = ({ formSchema, data, onChange, onDelete, section }) => {
                 <TextArea field={fieldData} data={item} order={item["order"]}>
                   {fieldData.includeAi ? (
                     <div className="absolute right-0 bottom-[9px]  z-50">
-                      <AiButton
-                        onClick={() =>
-                          rephrase(fieldData.key, item[fieldData.key])
-                        }
+                      <AiRephraseBox
+                        field={fieldData.key}
+                        data={item[fieldData.key]}
                       />
                     </div>
                   ) : null}
@@ -189,7 +181,10 @@ const TemplateForm = ({ formSchema, data, onChange, onDelete, section }) => {
               <TextArea field={fieldData} data={data}>
                 {fieldData.includeAi ? (
                   <div className="absolute right-0 bottom-[9px]  z-50">
-                    <AiButton onClick={(e) => rephrase(e)} />
+                    <AiRephraseBox
+                      field={fieldData.key}
+                      data={data[fieldData.key]}
+                    />
                   </div>
                 ) : null}
               </TextArea>
@@ -205,7 +200,7 @@ const TemplateForm = ({ formSchema, data, onChange, onDelete, section }) => {
 
   return (
     <div className="max-h-[840px] p-8 overflow-auto mb-10 custom-scrollbar">
-      <Loader openModal={isLoading} setOpenModal={setIsLoading} />
+      {/* <Loader openModal={isLoading} setOpenModal={setIsLoading} /> */}
       <form onChange={onFormChange} ref={formRef}>
         {generateForm(formSchema, data)}
       </form>

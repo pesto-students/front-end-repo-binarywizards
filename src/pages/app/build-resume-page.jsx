@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Template from "src/components/template";
 import TemplateForm from "src/components/template-form";
@@ -8,7 +8,6 @@ import {
   updateResumeMetaData,
 } from "src/store/builderSlice";
 import GearIcon from "src/assets/icons/gear.svg?react";
-import StarsIcon from "src/assets/icons/stars.svg?react";
 import DownloadIcon from "src/assets/icons/download.svg?react";
 import ShareIcon from "src/assets/icons/share.svg?react";
 import TimesIcon from "src/assets/icons/times.svg?react";
@@ -42,7 +41,6 @@ const BuildResume = () => {
   const [openAiConfigForm, setOpenAiConfigForm] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const gptRef = useRef();
 
   const isUpdateMode = action === "update" && !!resumeId;
 
@@ -166,12 +164,6 @@ const BuildResume = () => {
     }
   };
 
-  const generateChat = (e) => {
-    e.preventDefault();
-    const formData = gptRef.current;
-    console.log(formData);
-  };
-
   useEffect(() => {
     if (resumeData) {
       updateMetaData(resumeData.metaData);
@@ -252,52 +244,6 @@ const BuildResume = () => {
                       </span>
                       Configure
                     </button>
-                    <button
-                      type="button"
-                      className="ml-2 px-2 py-1.5 text-xs font-medium text-center inline-flex items-center text-white bg-accent rounded-lg hover:bg-accent-900 focus:ring-4 focus:outline-none focus:ring-accent-300"
-                      data-dropdown-toggle="aiChatBot"
-                      data-dropdown-trigger="click"
-                      data-dropdown-placement="bottom-end"
-                    >
-                      <StarsIcon className="w-6 h-6" />
-                    </button>
-                    <div
-                      id="aiChatBot"
-                      className="z-10 hidden bg-white rounded-lg shadow border-t border-solid border-gray-300 overflow-hidden
-                      w-[500px] pb-4 dark:bg-gray-700"
-                    >
-                      <div className="border-b border-solid border-gray-300 py-3 px-4">
-                        <h1 className="font-bold text-lg text-gray-700">
-                          Resume.AI
-                        </h1>
-                      </div>
-                      <form ref={gptRef}>
-                        <div className="max-h-[600px] p-4">
-                          <div className="relative">
-                            <div className="absolute left-0 top-[9px] flex bg-accent text-white p-2 rounded-md mx-2">
-                              <StarsIcon className="w-5 h-5" />
-                            </div>
-                            <textarea
-                              id="jobDescription"
-                              name="jobDescription"
-                              placeholder="Ask something?"
-                              maxLength="400"
-                              rows="4"
-                              className="peer min-h-[56px] h-full max-h-80 pl-14 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full px-2.5 py-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 custom-scrollbar resize-none"
-                            ></textarea>
-                          </div>
-                        </div>
-                        <div className="flex justify-center items-center bg-white">
-                          <button
-                            type="submit"
-                            className="px-3 py-2 text-xs font-medium text-center inline-flex items-center text-white bg-accent rounded-lg hover:bg-accent-900 focus:ring-4 focus:outline-none focus:ring-accent-300"
-                            onClick={() => generateChat()}
-                          >
-                            Generate
-                          </button>
-                        </div>
-                      </form>
-                    </div>
                   </div>
                 )}
               </div>

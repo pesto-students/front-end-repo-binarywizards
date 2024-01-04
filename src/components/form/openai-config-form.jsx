@@ -12,7 +12,7 @@ import {
 } from "src/utils/form-validator";
 import { debounce } from "src/utils/utils";
 
-const maxJobDescriptionLength = 450;
+const maxJobDescriptionLength = 1000;
 
 const validate = validator({
   type: "object",
@@ -123,7 +123,7 @@ function OpenAiConfigForm({ openModal, setOpenModal }) {
                 placeholder="e.g We are seeking a highly skilled and motivated Full Stack Developer with a proven track record of 4 to 7 years in web development."
                 rows="4"
                 maxLength={maxJobDescriptionLength}
-                className="peer bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                className="peer bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 resize-none custom-scrollbar"
                 onInput={debouncedJobDescriptionChange}
               ></textarea>
               <div className="absolute right-0 flex justify-end my-1 text-gray-400 text-sm">

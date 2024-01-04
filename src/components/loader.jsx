@@ -10,10 +10,10 @@ const Loader = ({ openModal, setOpenModal }) => {
           <div className="h-96">
             <div className="h-full flex justify-center items-center">
               <div className="flex justify-center items-center">
-                <h1 className="text-lg font-semibold text-center">Resume.AI</h1>
-                <span className="inline-block pb-1 ms-1">
-                  <BotIcon className="w-6 h-6" />
+                <span className="inline-block pb-2 mx-1">
+                  <BotIcon className="w-7 h-7" />
                 </span>
+                <h1 className="text-lg font-semibold text-center">Resume.AI</h1>
               </div>
             </div>
           </div>
