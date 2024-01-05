@@ -9,11 +9,38 @@ function createMarkup(template) {
   };
 }
 
-const Template = ({ json, data, onSelectedSection }) => {
+const Template = ({ json, data, onSelectedSection, onSelectFile }) => {
+  let uploadListeners = [];
   let myTemplate = createHTMLFromJSON(json, data);
   const handleSectionSelected = (event) => {
     const target = event.currentTarget;
     onSelectedSection(target.dataset.section);
+  };
+  const fileSelectionHandler = (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.addEventListener("load", () => {
+        let imageObj = {
+          src: reader.result?.toString() || "",
+          fileName: file.name,
+        };
+        e.target.value = "";
+        onSelectFile(imageObj);
+      });
+      reader.readAsDataURL(file);
+    }
+  };
+  const handleFileSelection = () => {
+    let fileInput = document.getElementById("upload-image-in-resume-fileInput");
+    if (!fileInput) return;
+    fileInput.addEventListener("change", fileSelectionHandler);
+    uploadListeners.push({
+      node: fileInput,
+      eventType: "change",
+      handler: fileSelectionHandler,
+    });
+    fileInput.click();
   };
   useEffect(() => {
     let editBtns = document.querySelectorAll(".resume-edit-btn");
@@ -30,9 +57,25 @@ const Template = ({ json, data, onSelectedSection }) => {
       });
       console.log("✅ Event listener added");
     }
+    let fileInputs = document.querySelectorAll(".upload-image-in-resume");
+    if (fileInputs && isNodeList(fileInputs)) {
+      let nodes = arrayFrom(fileInputs);
+      nodes.forEach(function (node) {
+        node.addEventListener("click", handleFileSelection);
+        listeners.push({
+          node: node,
+          eventType: "click",
+          handler: handleFileSelection,
+        });
+      });
+    }
 
     return () => {
       listeners.forEach((listener) => {
+        const { node, eventType, handler } = listener;
+        node.removeEventListener(eventType, handler);
+      });
+      uploadListeners.forEach((listener) => {
         const { node, eventType, handler } = listener;
         node.removeEventListener(eventType, handler);
       });
@@ -51,6 +94,7 @@ Template.propTypes = {
   json: PropTypes.object,
   data: PropTypes.object,
   onSelectedSection: PropTypes.func,
+  onSelectFile: PropTypes.func,
 };
 
 export default Template;

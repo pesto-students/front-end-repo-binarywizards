@@ -154,13 +154,20 @@ const AiRephraseBox = ({ field, data, rephraseCacheId }) => {
           <div className="h-96 overflow-hidden">
             {phrases.length ? (
               <div className="h-full flex flex-col">
-                <div className="flex items-center px-4 py-2 border-b border-solid border-gray-200">
-                  <span className="inline-block pb-2 me-1">
-                    <BotIcon className="w-7 h-7" />
-                  </span>
-                  <h1 className="text-lg font-semibold text-center">
-                    Resume.AI
-                  </h1>
+                <div className="h-full flex flex-col justify-center items-center">
+                  <div className="flex items-center px-4 py-2 border-b border-solid border-gray-200">
+                    <span className="inline-block pb-2 me-1">
+                      <BotIcon className="w-7 h-7" />
+                    </span>
+                    <h1 className="text-lg font-semibold text-center">
+                      Resume.AI
+                    </h1>
+                  </div>
+                  <div className="mt-4">
+                    <h1 className="text-lg font-semibold text-center">
+                      Please wait, while AI Rephrases your context
+                    </h1>
+                  </div>
                 </div>
                 <div
                   className="flex-1 px-5 pt-2 pb-5 overflow-y-auto custom-scrollbar scroll-smooth"

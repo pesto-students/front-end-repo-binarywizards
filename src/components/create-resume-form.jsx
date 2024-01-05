@@ -7,8 +7,11 @@ import { createResume } from "src/api-service/resume/resume-service";
 import { formValidator } from "src/utils/form-validator";
 import { htmlToBlob } from "src/utils/htmlToBlob";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { LoaderContext } from "src/contexts/loader-context";
 
 function CreateResumeForm({ openModal, setOpenModal }) {
+  const { toggleLoader } = useContext(LoaderContext);
   const { template, resume, metaData } = useSelector(
     (state) => state.builderState,
   );
@@ -38,12 +41,14 @@ function CreateResumeForm({ openModal, setOpenModal }) {
     node.style["width"] = "595px";
     node.style["height"] = "842px";
 
+    toggleLoader(true, "Creating your Resume, Please wait for few seconds...");
     const resumeBlob = await htmlToBlob(node);
     const payload = new FormData();
-    payload.append("files", resumeBlob, name.value);
+    payload.append("image", resumeBlob, name.value);
     payload.append("data", JSON.stringify(jsonData));
 
     const response = await createResume({ payload });
+    toggleLoader();
     if (response.status) {
       setOpenModal(false);
       toast.success(response.msg || "Resume creation success", {

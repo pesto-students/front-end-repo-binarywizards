@@ -27,6 +27,10 @@ import Skeleton from "react-loading-skeleton";
 import FetchError from "src/components/fetch-error";
 import Tippy from "@tippyjs/react";
 import OpenAiConfigForm from "src/components/form/openai-config-form";
+import CropTool from "src/components/crop-tool";
+import { uploadPhoto } from "src/api-service/upload/upload-service";
+import { useContext } from "react";
+import { LoaderContext } from "src/contexts/loader-context";
 
 const BuildResume = () => {
   const { action, templateId, resumeId } = useParams();
@@ -38,9 +42,12 @@ const BuildResume = () => {
   const [metaData, setMetaData] = useState({});
   const [section, setSection] = useState("");
   const [openCreateResumeForm, setOpenCreateResumeForm] = useState(false);
+  const [openCropTool, setOpenCropTool] = useState(false);
+  const [uploadImageSrc, setUploadImageSrc] = useState({});
   const [openAiConfigForm, setOpenAiConfigForm] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { toggleLoader } = useContext(LoaderContext);
 
   const isUpdateMode = action === "update" && !!resumeId;
 
@@ -127,7 +134,7 @@ const BuildResume = () => {
 
     const resumeBlob = await htmlToBlob(node);
     const payload = new FormData();
-    payload.append("files", resumeBlob, resume.name);
+    payload.append("image", resumeBlob, resume.name);
     payload.append("data", JSON.stringify({ metaData: finalMetaData }));
     const response = await updateResume({ params: resume.id, payload });
     if (response.status) {
@@ -151,7 +158,9 @@ const BuildResume = () => {
         metaData: metaData,
       };
     }
+    toggleLoader(true, "Pdf is Downloading, Please wait for few seconds...");
     const response = await generatePdf(reqProps);
+    toggleLoader();
     if (response.status) {
       const blob = new Blob([response.data], { type: "application/pdf" });
       const url = window.URL.createObjectURL(blob);
@@ -165,6 +174,45 @@ const BuildResume = () => {
       window.URL.revokeObjectURL(url);
     }
   };
+
+  function onSelectFile(imageObj) {
+    console.log(imageObj);
+    setUploadImageSrc({ ...imageObj });
+  }
+
+  const cancelCrop = () => {
+    setOpenCropTool(false);
+    setUploadImageSrc({});
+  };
+
+  const onSaveCrop = async (blob) => {
+    const payload = new FormData();
+    payload.append("image", blob, blob.name);
+    toggleLoader(true, "Uploading the photo, Please wait...");
+    const response = await uploadPhoto({ payload });
+    toggleLoader();
+    if (response.status) {
+      toast.success(response.msg || "Photo upload success", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+      setOpenCropTool(false);
+      setUploadImageSrc({});
+      const uniqueString = Date.now().toString(); // Use current timestamp as unique string
+      const uniqueUrl = response.data.url + "?unique=" + uniqueString;
+      updateMetaData({ profilePic: { photo: uniqueUrl } });
+    } else {
+      toast.error(response.msg, {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    }
+  };
+  useEffect(() => {
+    if (uploadImageSrc && uploadImageSrc.src) {
+      setOpenCropTool(true);
+    } else {
+      setOpenCropTool(false);
+    }
+  }, [uploadImageSrc]);
 
   useEffect(() => {
     if (resumeData) {
@@ -213,12 +261,20 @@ const BuildResume = () => {
 
   return (
     <div className="h-full flex flex-col px-10 py-4">
-      <h1>Build Resume</h1>
-      <CreateResumeForm
-        openModal={openCreateResumeForm}
-        setOpenModal={setOpenCreateResumeForm}
-      />
-
+      <div data-component="create-resume-form">
+        <CreateResumeForm
+          openModal={openCreateResumeForm}
+          setOpenModal={setOpenCreateResumeForm}
+        />
+      </div>
+      <div data-component="crop-tool">
+        <CropTool
+          imageObj={uploadImageSrc}
+          openModal={openCropTool}
+          setOpenModal={cancelCrop}
+          onSaveCrop={onSaveCrop}
+        />
+      </div>
       <div className="flex-1 flex justify-center gap-x-[5%]">
         <div className="flex flex-col items-start justify-start max-w-[600px] w-full h-auto mb-8">
           <div data-title="header" className="w-full mb-4">
@@ -232,7 +288,6 @@ const BuildResume = () => {
                 {isLoading ? (
                   <div>
                     <Skeleton width={110} height={36} />
-                    <Skeleton width={80} height={36} className="ml-2" />
                   </div>
                 ) : (
                   <div className="flex items-center justify-center">
@@ -315,7 +370,7 @@ const BuildResume = () => {
                     className="px-3 py-1.5 ml-2 text-xs font-semibold text-center uppercase inline-flex items-center text-white bg-accent rounded-md border-2 border-accent  hover:bg-accent-900 hover:border-accent-900 focus:ring-4 focus:outline-none focus:ring-accent-300"
                     onClick={() => onSaveResume()}
                   >
-                    {isUpdateMode ? "Update" : "Save"}
+                    {isUpdateMode ? "Update" : "Create"}
                   </button>
                   <Tippy content="Download Resume">
                     <button
@@ -326,14 +381,14 @@ const BuildResume = () => {
                       <DownloadIcon />
                     </button>
                   </Tippy>
-                  <Tippy content="Share your Resume">
+                  {/* <Tippy content="Share your Resume">
                     <button
                       type="button"
                       className="px-1.5 py-1.5 ml-2 text-xs font-medium text-center inline-flex items-center text-white bg-accent rounded-md hover:bg-accent-900 focus:ring-4 focus:outline-none focus:ring-accent-300"
                     >
                       <ShareIcon />
                     </button>
-                  </Tippy>
+                  </Tippy> */}
                 </div>
               )}
             </div>
@@ -351,6 +406,7 @@ const BuildResume = () => {
                 json={templateData.template}
                 data={metaData}
                 onSelectedSection={onSelectedSection}
+                onSelectFile={onSelectFile}
               />
             )}
           </div>
