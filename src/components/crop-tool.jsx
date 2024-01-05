@@ -209,10 +209,17 @@ const CropTool = ({
   return (
     <>
       <Modal show={openModal} onClose={() => setOpenModal(false)} size={"2xl"}>
-        <Modal.Header>Image Crop Tool</Modal.Header>
+        <div className="flex items-start justify-between rounded-t dark:border-gray-600 border-b p-5">
+          <h3
+            id=":r3b:"
+            className="text-xl font-medium text-gray-900 dark:text-white"
+          >
+            Image Crop Tool
+          </h3>
+        </div>
         <Modal.Body>
           <div>
-            <div className="mb-4">
+            <div className="mb-4 hidden">
               <form className="max-w-sm" ref={formRef}>
                 <div className="flex items-center gap-4">
                   <div className="mb-5 flex items-center">

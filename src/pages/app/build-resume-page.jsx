@@ -8,6 +8,7 @@ import {
   updateResumeMetaData,
 } from "src/store/builderSlice";
 import GearIcon from "src/assets/icons/gear.svg?react";
+import InfoIcon from "src/assets/icons/info.svg?react";
 import DownloadIcon from "src/assets/icons/download.svg?react";
 import ShareIcon from "src/assets/icons/share.svg?react";
 import TimesIcon from "src/assets/icons/times.svg?react";
@@ -39,6 +40,7 @@ const BuildResume = () => {
     resume,
     metaData: finalMetaData,
   } = useSelector((state) => state.builderState);
+  const { config } = useSelector((state) => state.openAiState);
   const [metaData, setMetaData] = useState({});
   const [section, setSection] = useState("");
   const [openCreateResumeForm, setOpenCreateResumeForm] = useState(false);
@@ -132,11 +134,16 @@ const BuildResume = () => {
     node.style["width"] = "595px";
     node.style["height"] = "842px";
 
+    toggleLoader(
+      true,
+      "Please wait for few seconds, while we update your Resume",
+    );
     const resumeBlob = await htmlToBlob(node);
     const payload = new FormData();
     payload.append("image", resumeBlob, resume.name);
     payload.append("data", JSON.stringify({ metaData: finalMetaData }));
     const response = await updateResume({ params: resume.id, payload });
+    toggleLoader();
     if (response.status) {
       toast.success(response.msg || "Resume updation success", {
         position: toast.POSITION.TOP_CENTER,
@@ -260,7 +267,7 @@ const BuildResume = () => {
   }
 
   return (
-    <div className="h-full flex flex-col px-10 py-4">
+    <div className="h-full flex flex-col px-10 py-4 pt-8">
       <div data-component="create-resume-form">
         <CreateResumeForm
           openModal={openCreateResumeForm}
@@ -274,6 +281,17 @@ const BuildResume = () => {
           setOpenModal={cancelCrop}
           onSaveCrop={onSaveCrop}
         />
+      </div>
+      <div className="flex justify-center mb-10">
+        {resumeData ? (
+          <h1 className="text-2xl text-gray-800 font-semibold uppercase underline">
+            {resumeData.name}
+          </h1>
+        ) : (
+          <h1 className="text-2xl text-gray-800 font-semibold capitalize">
+            Create New Resume
+          </h1>
+        )}
       </div>
       <div className="flex-1 flex justify-center gap-x-[5%]">
         <div className="flex flex-col items-start justify-start max-w-[600px] w-full h-auto mb-8">
@@ -291,16 +309,36 @@ const BuildResume = () => {
                   </div>
                 ) : (
                   <div className="flex items-center justify-center">
-                    <button
-                      type="button"
-                      className="px-3 py-2 text-xs font-medium text-center inline-flex items-center text-white bg-accent rounded-lg hover:bg-accent-900 focus:ring-4 focus:outline-none focus:ring-accent-300"
-                      onClick={() => setOpenAiConfigForm((toggle) => !toggle)}
+                    <Tippy
+                      content="Please ensure you update your AI configuration to align with the job title and description you're targeting."
+                      theme={"light"}
                     >
-                      <span className="me-2">
-                        <GearIcon />
-                      </span>
-                      Configure
-                    </button>
+                      <div className="me-2 text-gray-400 cursor-pointer">
+                        <InfoIcon />
+                      </div>
+                    </Tippy>
+
+                    <div className=" relative">
+                      {!config.jobDescription ? (
+                        <div className="absolute -left-1 -top-1">
+                          <span className="relative flex h-3 w-3">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                          </span>
+                        </div>
+                      ) : null}
+
+                      <button
+                        type="button"
+                        className="px-3 py-2 text-xs font-medium text-center inline-flex items-center text-white bg-accent rounded-lg hover:bg-accent-900 focus:ring-4 focus:outline-none focus:ring-accent-300"
+                        onClick={() => setOpenAiConfigForm((toggle) => !toggle)}
+                      >
+                        <span className="me-2">
+                          <GearIcon />
+                        </span>
+                        Configure AI
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>

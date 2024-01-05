@@ -51,7 +51,7 @@ const TemplatesPage = () => {
                 return (
                   <div
                     key={`resume-template-${index}`}
-                    className="w-[200px] cursor-pointer border border-gray-300 border-solid"
+                    className="w-[200px] cursor-pointer border border-gray-300 border-solid hover:scale-105 transition-transform duration-300 ease-in-out"
                     onClick={() => {
                       createResume(template.id);
                     }}

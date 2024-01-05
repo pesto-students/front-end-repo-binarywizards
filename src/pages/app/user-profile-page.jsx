@@ -77,7 +77,7 @@ const UserProfilePage = () => {
                   {user.username || "username"}
                 </h1>
               </div>
-              <div className="ml-4">
+              <div className="ml-4 hidden">
                 <button className="flex items-center rounded-lg px-3 py-1.5 bg-accent-200 text-gray-900 font-semibold text-sm">
                   <PencilIcon className="mr-1 w-4" />
                   <span>Edit</span>
