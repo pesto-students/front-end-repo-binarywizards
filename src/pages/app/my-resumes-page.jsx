@@ -66,7 +66,9 @@ const MyResumes = () => {
                   >
                     <div className="mb-2 cursor-pointer border border-gray-300 border-solid hover:scale-105 transition-transform duration-300 ease-in-out">
                       <img
-                        src={resume.thumbnail}
+                        src={
+                          resume.thumbnail + "?unique=" + Date.now().toString()
+                        }
                         alt="Resume"
                         className="h-[280px]"
                       />
