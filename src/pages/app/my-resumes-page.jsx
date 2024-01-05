@@ -37,6 +37,7 @@ const MyResumes = () => {
   };
 
   if (error) {
+    console.log("error: ", error);
     return (
       <div>
         <FetchError />
@@ -63,7 +64,7 @@ const MyResumes = () => {
                       updateResume(resume.templateId, resume.id);
                     }}
                   >
-                    <div className="mb-2 cursor-pointer border border-gray-300 border-solid">
+                    <div className="mb-2 cursor-pointer border border-gray-300 border-solid hover:scale-105 transition-transform duration-300 ease-in-out">
                       <img
                         src={resume.thumbnail}
                         alt="Resume"
@@ -78,25 +79,61 @@ const MyResumes = () => {
                   </div>
                 );
               })}
-          <div
-            className="w-[200px] h-[280px]"
-            onClick={() => {
-              createResume();
-            }}
-          >
-            <Tippy
-              content="Build new Resume"
-              followCursor={true}
-              plugins={[followCursor]}
+          {isLoading || (resumes && resumes.length) ? (
+            <div
+              className="w-[200px] h-[280px]"
+              onClick={() => {
+                createResume();
+              }}
             >
-              <div className="h-full mb-2 cursor-pointer border border-gray-300 border-solid">
-                <div className="w-full h-full flex items-center justify-center">
-                  <PlusIcon />
+              <Tippy
+                content="Build new Resume"
+                followCursor={true}
+                plugins={[followCursor]}
+              >
+                <div className="h-full mb-2 cursor-pointer border border-gray-300 border-solid">
+                  <div className="w-full h-full flex items-center justify-center">
+                    <PlusIcon />
+                  </div>
                 </div>
-              </div>
-            </Tippy>
-          </div>
+              </Tippy>
+            </div>
+          ) : null}
         </div>
+        {!isLoading && resumes && !resumes.length ? (
+          <div className="w-full">
+            <div className="flex  flex-col items-center">
+              <div
+                className="w-[200px] h-[280px]"
+                onClick={() => {
+                  createResume();
+                }}
+              >
+                <Tippy
+                  content="Build new Resume"
+                  followCursor={true}
+                  plugins={[followCursor]}
+                >
+                  <div className="h-full mb-2 cursor-pointer border border-gray-300 border-solid">
+                    <div className="w-full h-full flex items-center justify-center">
+                      <PlusIcon />
+                    </div>
+                  </div>
+                </Tippy>
+              </div>
+              <div className="mt-8">
+                <h1
+                  className="text-2xl text-gray-800 font-semibold underline cursor-pointer"
+                  onClick={() => {
+                    createResume();
+                  }}
+                >
+                  Create your first Resume
+                </h1>
+              </div>
+            </div>
+          </div>
+        ) : null}
       </div>
     </div>
   );

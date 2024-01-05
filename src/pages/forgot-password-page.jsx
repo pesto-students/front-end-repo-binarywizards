@@ -51,7 +51,7 @@ const ForgotPasswordPage = () => {
       email: email.value,
     };
     setIsLoading(true);
-    const response = await apiService.forgotPassword(payload);
+    const response = await apiService.forgotPassword({ payload });
     setIsLoading(false);
     if (response && response.status) {
       toast.success(response.data.message, {

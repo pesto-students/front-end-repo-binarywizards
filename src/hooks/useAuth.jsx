@@ -53,7 +53,7 @@ const useAuth = () => {
   const authorize = async (credentials) => {
     // Perform the login logic, probably an API call
     // If successful, set the token in localStorage and update state
-    const response = await apiService.login(credentials);
+    const response = await apiService.login({ payload: credentials });
     if (response && response.status) {
       const { accessToken } = response.data;
       setAccessToken(accessToken);
@@ -70,7 +70,7 @@ const useAuth = () => {
   };
 
   const signUp = async (userData) => {
-    const response = await apiService.signUp(userData);
+    const response = await apiService.signUp({ payload: userData });
     if (response && response.status) {
       const { accessToken } = response.data;
       setAccessToken(accessToken);

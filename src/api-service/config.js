@@ -26,6 +26,12 @@ const api = {
     getAll: routeMap("/resumes/user/all"),
     generatePdf: routeMap("/templates/generate-pdf"),
   },
+  upload: {
+    s3: routeMap("/upload/s3"),
+  },
+  openai: {
+    rephrase: routeMap("/openai/prompt"),
+  },
 };
 
 export { api };

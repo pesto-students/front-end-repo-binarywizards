@@ -7,8 +7,11 @@ import { createResume } from "src/api-service/resume/resume-service";
 import { formValidator } from "src/utils/form-validator";
 import { htmlToBlob } from "src/utils/htmlToBlob";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { LoaderContext } from "src/contexts/loader-context";
 
 function CreateResumeForm({ openModal, setOpenModal }) {
+  const { toggleLoader } = useContext(LoaderContext);
   const { template, resume, metaData } = useSelector(
     (state) => state.builderState,
   );
@@ -38,12 +41,14 @@ function CreateResumeForm({ openModal, setOpenModal }) {
     node.style["width"] = "595px";
     node.style["height"] = "842px";
 
+    toggleLoader(true, "Creating your Resume, Please wait for few seconds...");
     const resumeBlob = await htmlToBlob(node);
     const payload = new FormData();
-    payload.append("files", resumeBlob, name.value);
+    payload.append("image", resumeBlob, name.value);
     payload.append("data", JSON.stringify(jsonData));
 
-    const response = await createResume(payload);
+    const response = await createResume({ payload });
+    toggleLoader();
     if (response.status) {
       setOpenModal(false);
       toast.success(response.msg || "Resume creation success", {
@@ -79,7 +84,7 @@ function CreateResumeForm({ openModal, setOpenModal }) {
               <input
                 type="text"
                 id="name"
-                className="peer bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  focus:border-blue-500 focus-visible:outline-blue-500 block w-full  p-2.5 "
+                className="peer bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="e.g Software Resume"
                 required
               />

@@ -15,6 +15,7 @@ const UserProfilePage = () => {
 
   const fetchUser = async () => {
     const response = await apiService.user();
+    console.log(response);
     if (!response.status) {
       toast.error(response.msg, {
         position: toast.POSITION.TOP_CENTER,
@@ -76,7 +77,7 @@ const UserProfilePage = () => {
                   {user.username || "username"}
                 </h1>
               </div>
-              <div className="ml-4">
+              <div className="ml-4 hidden">
                 <button className="flex items-center rounded-lg px-3 py-1.5 bg-accent-200 text-gray-900 font-semibold text-sm">
                   <PencilIcon className="mr-1 w-4" />
                   <span>Edit</span>

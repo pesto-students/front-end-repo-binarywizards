@@ -1,7 +1,9 @@
 const ReviewSystem = () => {
   return (
     <>
-      <h1>Review System</h1>
+      <div className="w-full h-full flex justify-center items-center">
+        <h1 className="text-5xl font-bold">Coming soon...</h1>
+      </div>
     </>
   );
 };

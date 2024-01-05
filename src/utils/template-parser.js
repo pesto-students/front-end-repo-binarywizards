@@ -91,6 +91,7 @@ function createHTMLFromJSON(json, data) {
     // if (json.data && !validateData(json.data.schema, data)) {
     //   return false;
     // }
+
     element = document.createElement(json.tagName);
 
     // Set attributes
@@ -110,11 +111,34 @@ function createHTMLFromJSON(json, data) {
       element.style.cssText = json.styles;
     }
 
+    if (
+      json.tagName === "img" &&
+      json.className &&
+      json.className.includes("upload-image-in-resume")
+    ) {
+      let imageSrc = replacePlaceholders(json.src, data);
+      element.setAttribute("src", imageSrc);
+      const fileInput = document.createElement("input");
+      fileInput.setAttribute("type", "file");
+      fileInput.setAttribute("accept", "image/*");
+      fileInput.classList.add("hidden", "w-full", "h-full");
+      fileInput.id = "upload-image-in-resume-fileInput";
+      fileInput.style.display = "none";
+      fileInput.style.width = "100%";
+      fileInput.style.height = "100%";
+      element = [element, fileInput];
+    }
+
     // Process children
     if (json.children) {
       json.children.forEach((childJson) => {
         let childElement = null;
         if (childJson.type !== "block" && childJson.data) {
+          if (childJson.data.key === "profilePic") {
+            console.log("data: ", data);
+            console.log(childJson.data.schema);
+            console.log(validateData(childJson.data.schema, data));
+          }
           if (!validateData(childJson.data.schema, data)) return;
           let childData = childJson.data.key ? data[childJson.data.key] : data;
           childElement = createHTMLFromJSON(childJson, childData);

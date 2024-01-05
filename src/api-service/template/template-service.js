@@ -1,12 +1,21 @@
 import { axiosService } from "../axios-instance";
 import { api } from "../config";
 
-const getTemplate = async (params) => {
-  const response = await axiosService.get(api.templates.get, params);
+const getTemplate = async (props = {}) => {
+  const { params, options } = props;
+  const response = await axiosService.get({
+    endpoint: api.templates.get,
+    params,
+    options,
+  });
   return response;
 };
-const getAllTemplates = async () => {
-  const response = await axiosService.get(api.templates.getAll);
+const getAllTemplates = async (props = {}) => {
+  const { options } = props;
+  const response = await axiosService.get({
+    endpoint: api.templates.getAll,
+    options,
+  });
   return response;
 };
 

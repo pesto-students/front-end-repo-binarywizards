@@ -5,7 +5,7 @@ export default {
   darkMode: "class",
   content: [
     "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
+    "./src/**/*.{js,ts,jsx,tsx,svg}",
     "node_modules/flowbite-react/lib/esm/**/*.js",
   ],
   theme: {

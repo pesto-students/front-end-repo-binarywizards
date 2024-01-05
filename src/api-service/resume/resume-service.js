@@ -1,30 +1,52 @@
 import { axiosService } from "../axios-instance";
 import { api } from "../config";
 
-const createResume = async (payload) => {
-  const response = await axiosService.multipart(api.resume.create, payload);
-  return response;
-};
-const updateResume = async (id, payload) => {
-  const response = await axiosService.multipartPut(
-    api.resume.update,
+const createResume = async (props = {}) => {
+  const { payload, options } = props;
+  const response = await axiosService.multipart({
+    endpoint: api.resume.create,
     payload,
-    id,
-  );
+    options,
+  });
   return response;
 };
-const getResume = async (id) => {
-  const response = await axiosService.get(api.resume.get, id);
+const updateResume = async (props = {}) => {
+  const { payload, params, options } = props;
+  const response = await axiosService.multipartPut({
+    endpoint: api.resume.update,
+    payload,
+    params,
+    options,
+  });
+  return response;
+};
+const getResume = async (props = {}) => {
+  const { params, options } = props;
+  const response = await axiosService.get({
+    endpoint: api.resume.get,
+    params,
+    options,
+  });
   return response;
 };
 
-const getAllResumes = async () => {
-  const response = await axiosService.get(api.resume.getAll);
+const getAllResumes = async (props = {}) => {
+  const { options } = props;
+  const response = await axiosService.get({
+    endpoint: api.resume.getAll,
+    options,
+  });
   return response;
 };
 
-const generatePdf = async ({ data, id }) => {
-  const response = await axiosService.getPDF(api.resume.generatePdf, data, id);
+const generatePdf = async (props = {}) => {
+  const { payload, params, options } = props;
+  const response = await axiosService.getPDF({
+    endpoint: api.resume.generatePdf,
+    payload,
+    params,
+    options,
+  });
   return response;
 };
 

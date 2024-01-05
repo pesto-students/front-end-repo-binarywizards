@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Template from "src/components/template";
 import TemplateForm from "src/components/template-form";
@@ -8,7 +8,7 @@ import {
   updateResumeMetaData,
 } from "src/store/builderSlice";
 import GearIcon from "src/assets/icons/gear.svg?react";
-import StarsIcon from "src/assets/icons/stars.svg?react";
+import InfoIcon from "src/assets/icons/info.svg?react";
 import DownloadIcon from "src/assets/icons/download.svg?react";
 import ShareIcon from "src/assets/icons/share.svg?react";
 import TimesIcon from "src/assets/icons/times.svg?react";
@@ -28,6 +28,10 @@ import Skeleton from "react-loading-skeleton";
 import FetchError from "src/components/fetch-error";
 import Tippy from "@tippyjs/react";
 import OpenAiConfigForm from "src/components/form/openai-config-form";
+import CropTool from "src/components/crop-tool";
+import { uploadPhoto } from "src/api-service/upload/upload-service";
+import { useContext } from "react";
+import { LoaderContext } from "src/contexts/loader-context";
 
 const BuildResume = () => {
   const { action, templateId, resumeId } = useParams();
@@ -36,19 +40,22 @@ const BuildResume = () => {
     resume,
     metaData: finalMetaData,
   } = useSelector((state) => state.builderState);
+  const { config } = useSelector((state) => state.openAiState);
   const [metaData, setMetaData] = useState({});
   const [section, setSection] = useState("");
   const [openCreateResumeForm, setOpenCreateResumeForm] = useState(false);
+  const [openCropTool, setOpenCropTool] = useState(false);
+  const [uploadImageSrc, setUploadImageSrc] = useState({});
   const [openAiConfigForm, setOpenAiConfigForm] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const gptRef = useRef();
+  const { toggleLoader } = useContext(LoaderContext);
 
   const isUpdateMode = action === "update" && !!resumeId;
 
   // Query for fetching template data
   const fetchTemplate = async () => {
-    const response = await getTemplate(templateId);
+    const response = await getTemplate({ params: templateId });
     if (!response.status) {
       throw new Error(JSON.stringify(response));
     }
@@ -57,7 +64,7 @@ const BuildResume = () => {
 
   // Query for fetching resume data
   const fetchResume = async () => {
-    const response = await getResume(resumeId);
+    const response = await getResume({ params: resumeId });
     if (!response.status) {
       throw new Error(JSON.stringify(response));
     }
@@ -127,11 +134,16 @@ const BuildResume = () => {
     node.style["width"] = "595px";
     node.style["height"] = "842px";
 
+    toggleLoader(
+      true,
+      "Please wait for few seconds, while we update your Resume",
+    );
     const resumeBlob = await htmlToBlob(node);
     const payload = new FormData();
-    payload.append("files", resumeBlob, resume.name);
+    payload.append("image", resumeBlob, resume.name);
     payload.append("data", JSON.stringify({ metaData: finalMetaData }));
-    const response = await updateResume(resume.id, payload);
+    const response = await updateResume({ params: resume.id, payload });
+    toggleLoader();
     if (response.status) {
       toast.success(response.msg || "Resume updation success", {
         position: toast.POSITION.TOP_CENTER,
@@ -141,17 +153,21 @@ const BuildResume = () => {
         position: toast.POSITION.TOP_CENTER,
       });
     }
-    console.log(response);
   };
 
   const downloadResume = async () => {
-    let payload = {};
+    let reqProps = {};
     if (resumeId) {
-      payload["id"] = resumeId;
+      reqProps["params"] = resumeId;
     } else {
-      payload["data"] = { template: templateData.template, metaData: metaData };
+      reqProps["payload"] = {
+        template: templateData.template,
+        metaData: metaData,
+      };
     }
-    const response = await generatePdf(payload);
+    toggleLoader(true, "Pdf is Downloading, Please wait for few seconds...");
+    const response = await generatePdf(reqProps);
+    toggleLoader();
     if (response.status) {
       const blob = new Blob([response.data], { type: "application/pdf" });
       const url = window.URL.createObjectURL(blob);
@@ -166,11 +182,44 @@ const BuildResume = () => {
     }
   };
 
-  const generateChat = (e) => {
-    e.preventDefault();
-    const formData = gptRef.current;
-    console.log(formData);
+  function onSelectFile(imageObj) {
+    console.log(imageObj);
+    setUploadImageSrc({ ...imageObj });
+  }
+
+  const cancelCrop = () => {
+    setOpenCropTool(false);
+    setUploadImageSrc({});
   };
+
+  const onSaveCrop = async (blob) => {
+    const payload = new FormData();
+    payload.append("image", blob, blob.name);
+    toggleLoader(true, "Uploading the photo, Please wait...");
+    const response = await uploadPhoto({ payload });
+    toggleLoader();
+    if (response.status) {
+      toast.success(response.msg || "Photo upload success", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+      setOpenCropTool(false);
+      setUploadImageSrc({});
+      const uniqueString = Date.now().toString(); // Use current timestamp as unique string
+      const uniqueUrl = response.data.url + "?unique=" + uniqueString;
+      updateMetaData({ profilePic: { photo: uniqueUrl } });
+    } else {
+      toast.error(response.msg, {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    }
+  };
+  useEffect(() => {
+    if (uploadImageSrc && uploadImageSrc.src) {
+      setOpenCropTool(true);
+    } else {
+      setOpenCropTool(false);
+    }
+  }, [uploadImageSrc]);
 
   useEffect(() => {
     if (resumeData) {
@@ -218,13 +267,32 @@ const BuildResume = () => {
   }
 
   return (
-    <div className="h-full flex flex-col px-10 py-4">
-      <h1>Build Resume</h1>
-      <CreateResumeForm
-        openModal={openCreateResumeForm}
-        setOpenModal={setOpenCreateResumeForm}
-      />
-
+    <div className="h-full flex flex-col px-10 py-4 pt-8">
+      <div data-component="create-resume-form">
+        <CreateResumeForm
+          openModal={openCreateResumeForm}
+          setOpenModal={setOpenCreateResumeForm}
+        />
+      </div>
+      <div data-component="crop-tool">
+        <CropTool
+          imageObj={uploadImageSrc}
+          openModal={openCropTool}
+          setOpenModal={cancelCrop}
+          onSaveCrop={onSaveCrop}
+        />
+      </div>
+      <div className="flex justify-center mb-10">
+        {resumeData ? (
+          <h1 className="text-2xl text-gray-800 font-semibold uppercase underline">
+            {resumeData.name}
+          </h1>
+        ) : (
+          <h1 className="text-2xl text-gray-800 font-semibold capitalize">
+            Create New Resume
+          </h1>
+        )}
+      </div>
       <div className="flex-1 flex justify-center gap-x-[5%]">
         <div className="flex flex-col items-start justify-start max-w-[600px] w-full h-auto mb-8">
           <div data-title="header" className="w-full mb-4">
@@ -238,65 +306,38 @@ const BuildResume = () => {
                 {isLoading ? (
                   <div>
                     <Skeleton width={110} height={36} />
-                    <Skeleton width={80} height={36} className="ml-2" />
                   </div>
                 ) : (
                   <div className="flex items-center justify-center">
-                    <button
-                      type="button"
-                      className="px-3 py-2 text-xs font-medium text-center inline-flex items-center text-white bg-accent rounded-lg hover:bg-accent-900 focus:ring-4 focus:outline-none focus:ring-accent-300"
-                      onClick={() => setOpenAiConfigForm((toggle) => !toggle)}
+                    <Tippy
+                      content="Please ensure you update your AI configuration to align with the job title and description you're targeting."
+                      theme={"light"}
                     >
-                      <span className="me-2">
-                        <GearIcon />
-                      </span>
-                      Configure
-                    </button>
-                    <button
-                      type="button"
-                      className="ml-2 px-2 py-1.5 text-xs font-medium text-center inline-flex items-center text-white bg-accent rounded-lg hover:bg-accent-900 focus:ring-4 focus:outline-none focus:ring-accent-300"
-                      data-dropdown-toggle="aiChatBot"
-                      data-dropdown-trigger="click"
-                      data-dropdown-placement="bottom-end"
-                    >
-                      <StarsIcon className="w-6 h-6" />
-                    </button>
-                    <div
-                      id="aiChatBot"
-                      className="z-10 hidden bg-white rounded-lg shadow border-t border-solid border-gray-300 overflow-hidden
-                      w-[500px] pb-4 dark:bg-gray-700"
-                    >
-                      <div className="border-b border-solid border-gray-300 py-3 px-4">
-                        <h1 className="font-bold text-lg text-gray-700">
-                          Resume.AI
-                        </h1>
+                      <div className="me-2 text-gray-400 cursor-pointer">
+                        <InfoIcon />
                       </div>
-                      <form ref={gptRef}>
-                        <div className="max-h-[600px] p-4">
-                          <div className="relative">
-                            <div className="absolute left-0 top-[9px] flex bg-accent text-white p-2 rounded-md mx-2">
-                              <StarsIcon className="w-5 h-5" />
-                            </div>
-                            <textarea
-                              id="jobDescription"
-                              name="jobDescription"
-                              placeholder="Ask something?"
-                              maxLength="400"
-                              rows="4"
-                              className="peer min-h-[56px] h-full max-h-80 pl-14 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full px-2.5 py-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 custom-scrollbar resize-none"
-                            ></textarea>
-                          </div>
+                    </Tippy>
+
+                    <div className=" relative">
+                      {!config.jobDescription ? (
+                        <div className="absolute -left-1 -top-1">
+                          <span className="relative flex h-3 w-3">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                          </span>
                         </div>
-                        <div className="flex justify-center items-center bg-white">
-                          <button
-                            type="submit"
-                            className="px-3 py-2 text-xs font-medium text-center inline-flex items-center text-white bg-accent rounded-lg hover:bg-accent-900 focus:ring-4 focus:outline-none focus:ring-accent-300"
-                            onClick={() => generateChat()}
-                          >
-                            Generate
-                          </button>
-                        </div>
-                      </form>
+                      ) : null}
+
+                      <button
+                        type="button"
+                        className="px-3 py-2 text-xs font-medium text-center inline-flex items-center text-white bg-accent rounded-lg hover:bg-accent-900 focus:ring-4 focus:outline-none focus:ring-accent-300"
+                        onClick={() => setOpenAiConfigForm((toggle) => !toggle)}
+                      >
+                        <span className="me-2">
+                          <GearIcon />
+                        </span>
+                        Configure AI
+                      </button>
                     </div>
                   </div>
                 )}
@@ -367,7 +408,7 @@ const BuildResume = () => {
                     className="px-3 py-1.5 ml-2 text-xs font-semibold text-center uppercase inline-flex items-center text-white bg-accent rounded-md border-2 border-accent  hover:bg-accent-900 hover:border-accent-900 focus:ring-4 focus:outline-none focus:ring-accent-300"
                     onClick={() => onSaveResume()}
                   >
-                    {isUpdateMode ? "Update" : "Save"}
+                    {isUpdateMode ? "Update" : "Create"}
                   </button>
                   <Tippy content="Download Resume">
                     <button
@@ -378,14 +419,14 @@ const BuildResume = () => {
                       <DownloadIcon />
                     </button>
                   </Tippy>
-                  <Tippy content="Share your Resume">
+                  {/* <Tippy content="Share your Resume">
                     <button
                       type="button"
                       className="px-1.5 py-1.5 ml-2 text-xs font-medium text-center inline-flex items-center text-white bg-accent rounded-md hover:bg-accent-900 focus:ring-4 focus:outline-none focus:ring-accent-300"
                     >
                       <ShareIcon />
                     </button>
-                  </Tippy>
+                  </Tippy> */}
                 </div>
               )}
             </div>
@@ -403,6 +444,7 @@ const BuildResume = () => {
                 json={templateData.template}
                 data={metaData}
                 onSelectedSection={onSelectedSection}
+                onSelectFile={onSelectFile}
               />
             )}
           </div>
