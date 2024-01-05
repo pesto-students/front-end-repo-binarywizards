@@ -37,6 +37,7 @@ const MyResumes = () => {
   };
 
   if (error) {
+    console.log("error: ", error);
     return (
       <div>
         <FetchError />

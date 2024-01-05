@@ -3,6 +3,7 @@ import { useRef } from "react";
 import { debounce, isArray } from "src/utils/utils";
 import TextArea from "./form/text-area";
 import InputField from "./form/input-field";
+import { v4 as uuidv4 } from "uuid";
 
 import AiRephraseBox from "./ai-box";
 
@@ -117,6 +118,7 @@ const TemplateForm = ({ formSchema, data, onChange, onDelete, section }) => {
                       <AiRephraseBox
                         field={fieldData.key}
                         data={item[fieldData.key]}
+                        rephraseCacheId={uuidv4()}
                       />
                     </div>
                   ) : null}
@@ -184,6 +186,7 @@ const TemplateForm = ({ formSchema, data, onChange, onDelete, section }) => {
                     <AiRephraseBox
                       field={fieldData.key}
                       data={data[fieldData.key]}
+                      rephraseCacheId={uuidv4()}
                     />
                   </div>
                 ) : null}

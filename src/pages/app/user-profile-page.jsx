@@ -15,6 +15,7 @@ const UserProfilePage = () => {
 
   const fetchUser = async () => {
     const response = await apiService.user();
+    console.log(response);
     if (!response.status) {
       toast.error(response.msg, {
         position: toast.POSITION.TOP_CENTER,

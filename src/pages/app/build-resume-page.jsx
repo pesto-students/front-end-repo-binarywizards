@@ -46,7 +46,7 @@ const BuildResume = () => {
 
   // Query for fetching template data
   const fetchTemplate = async () => {
-    const response = await getTemplate(templateId);
+    const response = await getTemplate({ params: templateId });
     if (!response.status) {
       throw new Error(JSON.stringify(response));
     }
@@ -55,7 +55,7 @@ const BuildResume = () => {
 
   // Query for fetching resume data
   const fetchResume = async () => {
-    const response = await getResume(resumeId);
+    const response = await getResume({ params: resumeId });
     if (!response.status) {
       throw new Error(JSON.stringify(response));
     }
@@ -129,7 +129,7 @@ const BuildResume = () => {
     const payload = new FormData();
     payload.append("files", resumeBlob, resume.name);
     payload.append("data", JSON.stringify({ metaData: finalMetaData }));
-    const response = await updateResume(resume.id, payload);
+    const response = await updateResume({ params: resume.id, payload });
     if (response.status) {
       toast.success(response.msg || "Resume updation success", {
         position: toast.POSITION.TOP_CENTER,
@@ -139,17 +139,19 @@ const BuildResume = () => {
         position: toast.POSITION.TOP_CENTER,
       });
     }
-    console.log(response);
   };
 
   const downloadResume = async () => {
-    let payload = {};
+    let reqProps = {};
     if (resumeId) {
-      payload["id"] = resumeId;
+      reqProps["params"] = resumeId;
     } else {
-      payload["data"] = { template: templateData.template, metaData: metaData };
+      reqProps["payload"] = {
+        template: templateData.template,
+        metaData: metaData,
+      };
     }
-    const response = await generatePdf(payload);
+    const response = await generatePdf(reqProps);
     if (response.status) {
       const blob = new Blob([response.data], { type: "application/pdf" });
       const url = window.URL.createObjectURL(blob);

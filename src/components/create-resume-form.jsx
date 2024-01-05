@@ -43,7 +43,7 @@ function CreateResumeForm({ openModal, setOpenModal }) {
     payload.append("files", resumeBlob, name.value);
     payload.append("data", JSON.stringify(jsonData));
 
-    const response = await createResume(payload);
+    const response = await createResume({ payload });
     if (response.status) {
       setOpenModal(false);
       toast.success(response.msg || "Resume creation success", {

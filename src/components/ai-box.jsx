@@ -11,45 +11,68 @@ import ArrowStackUp from "src/assets/icons/arrow-stack-up.svg?react";
 import SpinnerIcon from "src/assets/icons/spinner.svg?react";
 import { useState, useRef } from "react";
 import { useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 
-const AiRephraseBox = ({ field, data }) => {
+const AiRephraseBox = ({ field, data, rephraseCacheId }) => {
   const { config } = useSelector((state) => state.openAiState);
   const [phrases, setPhrases] = useState([]);
   const [userInteracting, setUserInteracting] = useState(false);
   const [hasPhrases, setHasPhrases] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [currentContext, setCurrentContext] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isReqPending, setIsReqPending] = useState(false);
   const scrollableRef = useRef(null);
 
-  const rephraseHandler = async () => {
-    console.log("key: ", field);
-    console.log("value: ", data);
-    setIsLoading(true);
-    const response = await rephrase({ config: config, text: data });
-    setIsLoading(false);
+  // Query for fetching phrases
+  const fetchPhrases = async () => {
+    setIsReqPending(true);
+    const response = await rephrase({
+      payload: { config: config, text: data },
+    });
+    setIsReqPending(false);
     if (!response.status) {
-      toast.error(response.msg, {
-        position: toast.POSITION.TOP_CENTER,
-      });
-      return;
+      throw new Error(JSON.stringify(response));
     }
-    if (!hasPhrases) {
-      setHasPhrases(true);
-    }
-    const { versions } = response.data;
+    return response.data;
+  };
 
-    if (data && currentContext !== data) {
-      setCurrentContext(data);
-      setPhrases((phrases) => [
-        ...phrases,
-        { text: data, system: false },
-        ...versions,
-      ]);
-    } else {
-      setPhrases((phrases) => [...phrases, ...versions]);
+  const {
+    isLoading,
+    error,
+    data: phrasesData,
+    refetch,
+  } = useQuery({
+    queryKey: [`phrases${field}${rephraseCacheId}`],
+    queryFn: fetchPhrases,
+    enabled: false,
+    retry: false,
+  });
+
+  const rephraseHandleError = () => {
+    const errorObj = JSON.parse(error.message);
+    toast.error(errorObj.msg, {
+      position: toast.POSITION.TOP_CENTER,
+    });
+  };
+
+  const rephraseHandler = () => {
+    // check the condition twice
+    if (phrasesData && !isLoading && !error) {
+      if (!hasPhrases) {
+        setHasPhrases(true);
+      }
+      const { versions } = phrasesData;
+      if (data && currentContext !== data) {
+        setCurrentContext(data);
+        setPhrases((phrases) => [
+          ...phrases,
+          { text: data, system: false },
+          ...versions,
+        ]);
+      } else {
+        setPhrases((phrases) => [...phrases, ...versions]);
+      }
     }
-    console.log(versions);
   };
 
   const applyText = (text) => {
@@ -73,7 +96,7 @@ const AiRephraseBox = ({ field, data }) => {
 
   const toggleRephraseBox = () => {
     if (!phrases.length) {
-      rephraseHandler();
+      refetch();
     }
     if (!isVisible) {
       setIsVisible(true);
@@ -111,6 +134,15 @@ const AiRephraseBox = ({ field, data }) => {
   useEffect(() => {
     handleScroll();
   }, [phrases, isVisible]);
+
+  useEffect(() => {
+    if (phrasesData) {
+      rephraseHandler(phrasesData);
+    }
+    if (error) {
+      rephraseHandleError();
+    }
+  }, [phrasesData, error]);
 
   return (
     <Tippy
@@ -188,15 +220,15 @@ const AiRephraseBox = ({ field, data }) => {
                 <div className="flex justify-center items-center bg-white py-4 border-t border-solid border-gray-200">
                   <button
                     type="submit"
-                    disabled={isLoading ? true : false}
+                    disabled={isReqPending ? true : false}
                     className={`${
-                      isLoading
+                      isReqPending
                         ? "bg-accent-700 cursor-not-allowed"
                         : "bg-accent hover:bg-accent-900 cursor-pointer"
                     } px-3 py-2 text-xs font-medium text-center inline-flex items-center text-white  rounded-md  focus:ring-4 focus:outline-none focus:ring-accent-300`}
-                    onClick={() => rephraseHandler()}
+                    onClick={() => refetch()}
                   >
-                    {isLoading ? (
+                    {isReqPending ? (
                       <>
                         <SpinnerIcon />
                         <span>Generating...</span>
@@ -244,6 +276,7 @@ const AiRephraseBox = ({ field, data }) => {
 AiRephraseBox.propTypes = {
   field: PropTypes.string,
   data: PropTypes.string,
+  rephraseCacheId: PropTypes.string,
 };
 
 export default AiRephraseBox;

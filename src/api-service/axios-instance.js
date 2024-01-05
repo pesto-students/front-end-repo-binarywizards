@@ -120,12 +120,12 @@ const resolveError = (error) => {
 };
 
 const axiosService = {
-  post: async (endpoint, payload, params) => {
+  post: async ({ endpoint, payload, params, options }) => {
     if (params) {
       endpoint = `${endpoint}/${params}`;
     }
     return instance
-      .post(endpoint, payload)
+      .post(endpoint, payload, { ...options })
       .then(function (response) {
         console.log("Response: ", response);
         return { status: true, data: response.data };
@@ -134,13 +134,15 @@ const axiosService = {
         return resolveError(error);
       });
   },
-  multipart: async (endpoint, formData) => {
+
+  multipart: async ({ endpoint, payload, options }) => {
     return instance
-      .post(endpoint, formData, {
+      .post(endpoint, payload, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
         timeout: 1000 * 10,
+        ...options,
       })
       .then(function (response) {
         console.log("Response: ", response);
@@ -150,16 +152,18 @@ const axiosService = {
         return resolveError(error);
       });
   },
-  multipartPut: async (endpoint, formData, params) => {
+
+  multipartPut: async ({ endpoint, payload, params, options }) => {
     if (params) {
       endpoint = `${endpoint}/${params}`;
     }
     return instance
-      .put(endpoint, formData, {
+      .put(endpoint, payload, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
         timeout: 1000 * 10,
+        ...options,
       })
       .then(function (response) {
         console.log("Response: ", response);
@@ -169,12 +173,13 @@ const axiosService = {
         return resolveError(error);
       });
   },
-  put: async (endpoint, payload, params) => {
+
+  put: async ({ endpoint, payload, params, options }) => {
     if (params) {
       endpoint = `${endpoint}/${params}`;
     }
     return instance
-      .put(endpoint, payload)
+      .put(endpoint, payload, { ...options })
       .then(function (response) {
         return { status: true, data: response.data };
       })
@@ -182,12 +187,13 @@ const axiosService = {
         return resolveError(error);
       });
   },
-  get: async (endpoint, params) => {
+
+  get: async ({ endpoint, params, options }) => {
     if (params) {
       endpoint = `${endpoint}/${params}`;
     }
     return instance
-      .get(endpoint)
+      .get(endpoint, { ...options })
       .then(function (response) {
         return { status: true, data: response.data };
       })
@@ -195,13 +201,14 @@ const axiosService = {
         return resolveError(error);
       });
   },
-  getPDF: async (endpoint, payload, params) => {
+
+  getPDF: async ({ endpoint, payload, params, options }) => {
     if (params) {
       endpoint = `${endpoint}/${params}`;
     }
     if (!payload) payload = {};
     return instance
-      .post(endpoint, payload, { responseType: "blob" })
+      .post(endpoint, payload, { responseType: "blob", ...options })
       .then(function (response) {
         return { status: true, data: response.data };
       })
@@ -211,4 +218,8 @@ const axiosService = {
   },
 };
 
-export { axiosService, refreshToken };
+const getAxiosReqController = () => {
+  return axios.CancelToken.source();
+};
+
+export { axiosService, refreshToken, getAxiosReqController };

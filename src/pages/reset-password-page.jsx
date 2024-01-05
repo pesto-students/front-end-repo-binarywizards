@@ -78,7 +78,7 @@ const ResetPasswordPage = () => {
     };
 
     setIsLoading(true);
-    const response = await apiService.resetPassword(payload, token);
+    const response = await apiService.resetPassword({ payload, params: token });
     setIsLoading(false);
 
     if (response && response.status) {
