@@ -4,7 +4,7 @@ PerfectResume.ai is a web application that will empowers users to create, enhanc
 resumes using AI-driven features. offers tools for resume building with pre-generated ATS friendly resume Template crafted by industry experts, customize content generation based on job description.
 
 # Steps to run
-- git clone git@github.com:pesto-students/front-end-repo-binarywizards.git
+- `git clone git@github.com:pesto-students/front-end-repo-binarywizards.git`
 - cd front-end-repo-binarywizards
 - npm install
 - npm run dev
