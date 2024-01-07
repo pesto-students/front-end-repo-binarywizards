@@ -5,6 +5,8 @@ resumes using AI-driven features. offers tools for resume building with pre-gene
 
 # Steps to run
 - `git clone git@github.com:pesto-students/front-end-repo-binarywizards.git`
-- cd front-end-repo-binarywizards
-- npm install
-- npm run dev
+- `cd front-end-repo-binarywizards`
+
+### Install Dependencies and Run
+- `npm install`
+- `npm run dev`
