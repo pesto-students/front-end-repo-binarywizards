@@ -18,6 +18,7 @@ export const builderSlice = createSlice({
     setResumeData: (state, action) => {
       const { resume } = action.payload;
       state.resume = resume;
+      state.metaData = resume.metaData;
     },
     updateResumeMetaData: (state, action) => {
       const { metaData } = action.payload;

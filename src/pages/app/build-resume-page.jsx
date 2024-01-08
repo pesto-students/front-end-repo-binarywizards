@@ -35,13 +35,11 @@ import { LoaderContext } from "src/contexts/loader-context";
 
 const BuildResume = () => {
   const { action, templateId, resumeId } = useParams();
-  const {
-    template,
-    resume,
-    metaData: finalMetaData,
-  } = useSelector((state) => state.builderState);
+  const { template, resume, metaData } = useSelector(
+    (state) => state.builderState,
+  );
   const { config } = useSelector((state) => state.openAiState);
-  const [metaData, setMetaData] = useState({});
+  // const [metaData, setMetaData] = useState(finalMetaData);
   const [section, setSection] = useState("");
   const [openCreateResumeForm, setOpenCreateResumeForm] = useState(false);
   const [openCropTool, setOpenCropTool] = useState(false);
@@ -98,7 +96,7 @@ const BuildResume = () => {
 
   const updateMetaData = (newMetaData) => {
     const updatedMetaData = { ...metaData, ...newMetaData };
-    setMetaData(updatedMetaData);
+    // setMetaData(updatedMetaData);
     dispatch(updateResumeMetaData({ metaData: updatedMetaData }));
   };
 
@@ -141,7 +139,7 @@ const BuildResume = () => {
     const resumeBlob = await htmlToBlob(node);
     const payload = new FormData();
     payload.append("image", resumeBlob, resume.name);
-    payload.append("data", JSON.stringify({ metaData: finalMetaData }));
+    payload.append("data", JSON.stringify({ metaData: metaData }));
     const response = await updateResume({ params: resume.id, payload });
     toggleLoader();
     if (response.status) {
@@ -223,7 +221,7 @@ const BuildResume = () => {
 
   useEffect(() => {
     if (resumeData) {
-      updateMetaData(resumeData.metaData);
+      // updateMetaData(resumeData.metaData);
       dispatch(setResumeData({ resume: resumeData }));
     }
   }, [resumeData]);

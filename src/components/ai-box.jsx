@@ -14,6 +14,8 @@ import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 const AiRephraseBox = ({ field, data, rephraseCacheId }) => {
+  console.log("field: ", field);
+  console.log("field: ", data);
   const { config } = useSelector((state) => state.openAiState);
   const [phrases, setPhrases] = useState([]);
   const [userInteracting, setUserInteracting] = useState(false);
